@@ -1,17 +1,25 @@
-let patients = [
-    { id: '1', name: 'Nguyễn Văn A', age: 30 },
-    { id: '2', name: 'Trần Thị B', age: 25 }
-];
-console.log("Patient data loaded successfully.");
-console.log(patients);      
 
-function testScope(){
-    if(true){
-        let doctorName = "Dr. Smith";  
-        var doctorName1 = "Dr. John";
-        console.log("In block",doctorName); 
-    }
-    console.log("Out block",doctorName1);
+function addPatients(patients, newPatients) {
+    return [...patients, newPatients];
 }
 
-testScope();
+const updatePatient = (patients,id, updates) => {
+    return patients.map(patient => 
+        patient.id === id
+        ?{...patient, ...updates}
+        : patient
+    );
+}
+
+let patientList = [
+    {id: 1, name: "John Doe", age: 30, condition: "Flu"},
+    {id: 2, name: "Jane Smith", age: 25, condition: "Cold"}
+];
+console.log("Patient Defaullt: ", patientList);
+
+let newPatient ={id: 3, name: "Alice Johnson", age: 40, condition: "Allergy"};
+patientList = addPatients(patientList, newPatient);
+console.log("After Adding New Patient: ", patientList);
+
+patientList = updatePatient(patientList, 2, {name:"Malisa", age: 26, condition: "Recovered"});
+console.log("After Updating Patient: ", patientList);
