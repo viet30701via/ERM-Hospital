@@ -1,5 +1,5 @@
 
-function addPatients(patients, newPatients) {
+function addPatient(patients, newPatients) {
     return [...patients, newPatients];
 }
 
@@ -18,8 +18,40 @@ let patientList = [
 console.log("Patient Defaullt: ", patientList);
 
 let newPatient ={id: 3, name: "Alice Johnson", age: 40, condition: "Allergy"};
-patientList = addPatients(patientList, newPatient);
+patientList = addPatient(patientList, newPatient);
 console.log("After Adding New Patient: ", patientList);
 
 patientList = updatePatient(patientList, 2, {name:"Malisa", age: 26, condition: "Recovered"});
 console.log("After Updating Patient: ", patientList);
+
+// const name = patientList.map(patient => patient.name);
+// console.log("Patient Names: ", name);
+
+// const fluPatient = patientList.filter(p => p.condition === "Flu");
+// console.log("Flu Patients: ", fluPatient);
+
+const p = patientList.find(p => p.id === 1);
+console.log("Find Patient with ID 1: ", p);
+
+// const deletePatient = (patients, id) => {
+//     return patients.filter(patient => patient.id !== id);
+// }
+// patientList = deletePatient(patientList, 1);
+// console.log("After Deleting Patient: ", patientList);
+
+const searchPatient = (patients, keyword) => {
+    return patients.find(patient =>
+        patient.id.toString().includes(keyword) ||
+        patient.name.includes(keyword)
+    );
+}
+const searchResultByName = searchPatient(patientList, "John");
+const searchResultById = searchPatient(patientList, "3");
+
+console.log("Search Result by Name: ", searchResultByName);
+console.log("Search Result by ID: ", searchResultById);
+
+//Use map to manage 
+const patientMap = new Map();
+patientList.forEach(p=>patientMap.set(p.id, p));
+console.log("Find Patient in Map with Id 2:", patientMap.get(2));
