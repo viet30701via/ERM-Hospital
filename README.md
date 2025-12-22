@@ -1,4 +1,6 @@
 # Dự án EMR (Electronic Medical Record)
+
+Test Conflig
 Hệ thống EMR - Nhánh Conflic
 Hệ thống quản lý hồ sơ bệnh án điện tử.
 
