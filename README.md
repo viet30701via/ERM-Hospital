@@ -1,5 +1,5 @@
 # Dự án EMR (Electronic Medical Record)
-
+Hệ thống EMR - Nhánh Conflic
 Hệ thống quản lý hồ sơ bệnh án điện tử.
 
 ## Kiến trúc hệ thống (Architecture)
