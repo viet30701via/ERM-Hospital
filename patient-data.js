@@ -1,4 +1,8 @@
 
+let patientList = [
+    {id: 1, name: "John Doe", age: 30, condition: "Flu"},
+    {id: 2, name: "Jane Smith", age: 25, condition: "Cold"}
+];
 function addPatient(patients, newPatients) {
     return [...patients, newPatients];
 }
@@ -11,10 +15,6 @@ const updatePatient = (patients,id, updates) => {
     );
 }
 
-let patientList = [
-    {id: 1, name: "John Doe", age: 30, condition: "Flu"},
-    {id: 2, name: "Jane Smith", age: 25, condition: "Cold"}
-];
 console.log("Patient Defaullt: ", patientList);
 
 let newPatient ={id: 3, name: "Alice Johnson", age: 40, condition: "Allergy"};
@@ -42,7 +42,7 @@ console.log("Find Patient with ID 1: ", p);
 const searchPatient = (patients, keyword) => {
     return patients.find(patient =>
         patient.id.toString().includes(keyword) ||
-        patient.name.includes(keyword)
+        patient.name.toLowerCase().includes(keyword)
     );
 }
 const searchResultByName = searchPatient(patientList, "John");
@@ -55,3 +55,32 @@ console.log("Search Result by ID: ", searchResultById);
 const patientMap = new Map();
 patientList.forEach(p=>patientMap.set(p.id, p));
 console.log("Find Patient in Map with Id 2:", patientMap.get(2));
+
+
+//Asynce,promise,await
+function fetchPatient() {
+    return new Promise((resolve, reject) => {
+    console.log("Fetching patient data...");
+    setTimeout(() => 
+    {
+        const success = true;
+        if (success) {
+            resolve([...patientList]);
+        } else {
+            reject("Failed to fetch patient data");
+        }
+    }, 1000);
+    })
+}
+
+async function displayPatients() {
+    try{
+        const patients = await fetchPatient();
+        console.log("Patients loaded: ", patients);
+    } catch (error) {
+        console.log("Error loading patients:", error);
+    }
+    console.log("End of patient data fetch.");
+}
+
+displayPatients();
