@@ -7,10 +7,10 @@ export function validateMedicalRecord(record: any): record is MedicalRecord {
     throw new Error("Invalid Id");
   }
   if (!record.diagnosis || record.diagnosis.trim().length < 2) {
-    throw new Error("Invalid name");
+    throw new Error("Invalid diagnosis");
   }
   if (!(record.date instanceof Date)) {
-    throw new Error("Date must be a valid Date object");
+    throw new Error("Invalid Date");
   }
   return true;
 }
