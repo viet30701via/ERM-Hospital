@@ -1,17 +1,15 @@
-export enum Role {Patient = "patient", Doctor = "doctor"}
-export type Gender = "male" | "female" | "other";
+import {IIdentifiable} from "./base";
+import { Role, Gender, PatientStatus } from "./type";
 
-export interface Patient {
-    id: string;
+
+export interface Patient extends IIdentifiable {
     name: string;
-    age : number;
+    age: number;    
     gender: Gender;
-    role : Role.Patient;
+    role: Role.Patient;
     conditions: string;
-    status : PatientStatus;
+    status: PatientStatus;
 }
 
-export enum PatientStatus{
-    Active = "active",
-    Inactive = "inactive",
-}
+
+export { Role, PatientStatus };

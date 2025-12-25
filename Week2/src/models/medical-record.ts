@@ -1,13 +1,7 @@
-export interface Patient {
-    id: number;
-    name: string;
-    age: number;
-    condition: string;
-}
+import { IIdentifiable } from "./base";
 
-export interface MedicalRecord {
-    id: string;
-    patientId: number;
+export interface MedicalRecord extends IIdentifiable {
+    patientId: string;
     date: Date;
-    diagnosis: string; 
+    diagnosis: string;
 }
