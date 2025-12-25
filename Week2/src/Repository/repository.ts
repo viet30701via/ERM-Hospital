@@ -1,4 +1,4 @@
-import { IIdentifiable } from "../models/base";
+import { IIdentifiable } from "../Models/base";
 
 export interface IRepository<T extends IIdentifiable> {
     add(item: T): void;

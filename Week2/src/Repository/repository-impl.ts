@@ -1,4 +1,4 @@
-import { IIdentifiable } from "../models/base";
+import { IIdentifiable } from "../Models/base";
 import { IRepository } from "./repository";
 
 export class Repository<T extends IIdentifiable> implements IRepository <T>     

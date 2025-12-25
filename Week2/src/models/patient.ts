@@ -1,5 +1,5 @@
-import {IIdentifiable} from "./base";
-import { Role, Gender, PatientStatus } from "./type";
+import {IIdentifiable} from "../Models/base";
+import { Role, Gender, PatientStatus } from "../Models/type";
 
 
 export interface Patient extends IIdentifiable {

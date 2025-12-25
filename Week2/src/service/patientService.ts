@@ -1,4 +1,4 @@
-import { Patient } from "../models/patient";
+import { Patient } from "../Models/patient";
 import { IRepository } from "../Repository/repository";
 
 export class PatientService{
