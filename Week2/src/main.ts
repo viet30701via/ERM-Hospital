@@ -1,9 +1,9 @@
 import { Repository } from "../src/Repository/repository-impl";
-import { PatientService } from "./service/patientService";
+import { PatientService } from "./Service/patientService";
 import { Patient } from "./Models/patient";
 import { Role, PatientStatus } from "./Models/type";
 import { Doctor } from "./Models/docter";
-import { DoctorService } from "./service/doctorService";
+import { DoctorService } from "./Service/doctorService";
 import { listPatient,listDoctor } from "./Data/data";
 
 
