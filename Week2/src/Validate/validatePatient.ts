@@ -10,7 +10,7 @@ export function validatePatient(patient : any) : patient is Patient{
         throw new Error("Invalid PatientId")
 
     }
-    if(typeof patient.name !== "string")
+    if(!patient.name || patient.name.trim().length < 2)
     {
         throw new Error("Invalid name");
     }

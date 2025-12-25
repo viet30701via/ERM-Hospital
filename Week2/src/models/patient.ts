@@ -1,6 +1,6 @@
 import {IIdentifiable} from "../Models/base";
 import { Role, Gender, PatientStatus } from "../Models/type";
-
+import { MedicalRecord } from "./medicalRecords";
 
 export interface Patient extends IIdentifiable {
     name: string;
@@ -9,6 +9,7 @@ export interface Patient extends IIdentifiable {
     role: Role.Patient;
     conditions: string;
     status: PatientStatus;
+    medicalRecord : MedicalRecord[]; // 1 bệnh nhan có nhiều medicalrecord
 }
 
 
