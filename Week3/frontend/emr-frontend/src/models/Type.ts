@@ -6,6 +6,6 @@ export enum Role {
 export type Gender = "male" | "female" | "other";
 
 export enum PatientStatus {
-  Active = "active",
-  Inactive = "inactive",
+  Active = "Active",
+  Inactive = "Inactive",
 }
