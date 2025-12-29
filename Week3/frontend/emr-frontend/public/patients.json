@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "age": 30,
+    "gender": "male",
+    "role": "Patient",
+    "conditions": "Diabetes",
+    "status": "Active",
+    "medicalRecord": []
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "age": 25,
+    "gender": "female",
+    "role": "Patient",
+    "conditions": "Asthma",
+    "status": "Active",
+    "medicalRecord": []
+  },
+  {
+    "id": "3",
+    "name": "Tom Lee",
+    "age": 40,
+    "gender": "male",
+    "role": "Patient",
+    "conditions": "Hypertension",
+    "status": "Inactive",
+    "medicalRecord": []
+  }
+]
