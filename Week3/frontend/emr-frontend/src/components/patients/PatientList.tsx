@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Patient } from "../models/Patient";
+import type { Patient } from "../../models/Patient";
 import PatientForm from "./PatientForm";
 
 //list patient
@@ -14,13 +14,9 @@ export default function PatientList() {
 
   const [error, setError] = useState<string>("");
 
-  const [filter, setFilter] = useState("All");
-
   const addPatient = (p: Patient) => {
     setPatient((prev) => [...prev, p]);
   };
-  const filterPatient =
-    filter === "All" ? patients : patients.filter((p) => p.status === filter);
 
   useEffect(() => {
     console.log("Patient mounted");
@@ -48,12 +44,6 @@ export default function PatientList() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   return (
     <div>
-      <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-        <option value="All">All</option>
-        <option value="Active">Active</option>
-        <option value="Inactive">Inactive</option>
-      </select>
-
       <PatientForm addPatient={addPatient} />
 
       <h2>Patient List</h2>
@@ -67,7 +57,7 @@ export default function PatientList() {
           {filterPatient.map((patient) => (
             <li key={patient.id}>
               Name: <strong>{patient.name}</strong> - Gender: {patient.gender} -
-              Age: {patient.age} - Phone: {patient.phone} - Address:
+              Age: {patient.age} - Phone: {patient.phone} - Address:{" "}
               {patient.address}
             </li>
           ))}

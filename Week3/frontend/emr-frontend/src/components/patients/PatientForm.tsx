@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import type { Patient } from "../models/Patient";
-import { Role, type Gender, PatientStatus } from "../models/Type";
-import type { MedicalRecord } from "../models/MedicalRecord";
+import type { Patient } from "../../models/Patient";
+import { Role, type Gender, PatientStatus } from "../../models/Type";
+import type { MedicalRecord } from "../../models/MedicalRecord";
 
 // interface FormData {
 //   name: string;
@@ -28,8 +28,6 @@ export default function PatientForm({ addPatient }: PatientFormProps) {
   const [gender, setGender] = useState<"male" | "female">("male");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-
-  const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

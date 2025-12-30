@@ -1,12 +1,12 @@
-import PatientList from "./components/PatientList";
+import PatientList from "./components/patients/PatientList";
 
 function App() {
   return (
     <div>
       <h1>List Patient</h1>
-      <PatientList/>
+      <PatientList />
     </div>
-  )
+  );
 }
 
 export default App;
