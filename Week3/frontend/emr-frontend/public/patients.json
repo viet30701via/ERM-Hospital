@@ -7,7 +7,9 @@
     "role": "Patient",
     "conditions": "Diabetes",
     "status": "Active",
-    "medicalRecord": []
+    "medicalRecord": [],
+    "phone" : "0988398236",
+    "address":"Ha Noi"
   },
   {
     "id": "2",
@@ -17,7 +19,9 @@
     "role": "Patient",
     "conditions": "Asthma",
     "status": "Active",
-    "medicalRecord": []
+    "medicalRecord": [],
+    "phone" : "097217668",
+    "address":"Bac Ninh"
   },
   {
     "id": "3",
@@ -27,6 +31,8 @@
     "role": "Patient",
     "conditions": "Hypertension",
     "status": "Inactive",
-    "medicalRecord": []
+    "medicalRecord": [],
+    "phone" : "0913035889",
+    "address":"Hung Yen"
   }
 ]

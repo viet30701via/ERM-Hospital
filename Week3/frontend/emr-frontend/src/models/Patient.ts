@@ -9,6 +9,8 @@ export interface Patient extends IIdentifiable {
   conditions: string;
   status: PatientStatus;
   medicalRecord: MedicalRecord[]; // 1 bệnh nhan có nhiều medicalrecord
+  phone: string;
+  address: string;
 }
 
 export { Role, PatientStatus };
