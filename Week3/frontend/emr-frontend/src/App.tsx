@@ -1,10 +1,8 @@
-import PatientList from "./components/patients/PatientList";
-
+import PatientPage from "./pages/PatientsPage";
 function App() {
   return (
     <div>
-      <h1>List Patient</h1>
-      <PatientList />
+      <PatientPage />
     </div>
   );
 }

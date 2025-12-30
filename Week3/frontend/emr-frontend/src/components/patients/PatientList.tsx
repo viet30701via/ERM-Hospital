@@ -54,7 +54,7 @@ export default function PatientList() {
       {loading && <p>Loading....</p>}
       {showList && (
         <ul>
-          {filterPatient.map((patient) => (
+          {patients.map((patient) => (
             <li key={patient.id}>
               Name: <strong>{patient.name}</strong> - Gender: {patient.gender} -
               Age: {patient.age} - Phone: {patient.phone} - Address:{" "}
