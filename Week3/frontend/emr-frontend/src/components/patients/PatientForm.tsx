@@ -7,29 +7,33 @@ import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
 
 interface PatientFormProps {
-  addPatient: (patient: Patient) => void;
+  initialData?: Patient;
+  onSubmit: (patient: Patient) => void;
   onSuccess: () => void;
 }
 export default function PatientForm({
-  addPatient,
+  initialData,
+  onSubmit,
   onSuccess,
 }: PatientFormProps) {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState<number>(0);
-  const [gender, setGender] = useState<Gender>("male");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [name, setName] = useState(() => initialData?.name ?? "");
+  const [age, setAge] = useState(() => initialData?.age ?? 0);
+  const [gender, setGender] = useState<Gender>(
+    () => initialData?.gender ?? "male"
+  );
+  const [phone, setPhone] = useState(() => initialData?.phone ?? "");
+  const [address, setAddress] = useState(() => initialData?.address ?? "");
   const { errors, validate } = useFormValidation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const ok = validate({ name, age, phone, address });
     if (!ok) return;
-    const newPatient: Patient = {
-      id: "",
+    const patient: Patient = {
+      id: initialData?.id ?? "",
       name: name,
       age: age,
-      gender: "male",
+      gender,
       role: Role.Patient,
       conditions: "",
       status: PatientStatus.Active,
@@ -37,13 +41,14 @@ export default function PatientForm({
       phone: phone,
       address: address,
     };
-    addPatient(newPatient);
+    onSubmit(patient);
     onSuccess();
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>Add Patient</h3>
+      <h3>{initialData ? "Update Patient" : "Add Patient"}</h3>
+
       <InputField label="Name" value={name} onChange={setName} />
       <InputField
         label="Age"
@@ -65,7 +70,9 @@ export default function PatientForm({
         </p>
       ))}
 
-      <Button type="submit">Add Patient</Button>
+      <Button type="submit">
+        {initialData ? "Update Patient" : "Add Patient"}
+      </Button>
     </form>
   );
 }

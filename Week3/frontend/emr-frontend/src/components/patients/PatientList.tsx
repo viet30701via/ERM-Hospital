@@ -7,25 +7,37 @@ import Modal from "../ui/Modal";
 export default function PatientList() {
   //List patients
   const [patients, setPatient] = useState<Patient[]>([]);
-  //Show/Hide list
   //Edit
-  const [edit, setEdit] = useState<Patient | null>(null);
+  const [editing, setEditing] = useState<Patient | null>(null);
+  //Show/Hide list
   const [showList, setShowList] = useState<boolean>(true);
   //Loading state
   const [loading, setLoading] = useState<boolean>(true);
   //Open/Close Modal
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string>("");
-
+  const [message, setMessage] = useState("");
   const addPatient = (p: Patient) => {
     setPatient((prev) => [...prev, p]);
+    setMessage("Add patient successful! ");
   };
 
-  const updatePatient = (p: Patient) => {
-    setPatient((prev) => prev.map((item) => (item.id === p.id ? p : item)));
+  const updatePatient = (updated: Patient) => {
+    setPatient((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
   };
+  const deletePatient = (id: string) => {
+    const confirmed = window.confirm("Are you sure want to delete");
+    if (!confirmed) return;
+    setPatient((prev) => prev.filter((p) => p.id !== id));
+    setMessage("Delete successfull");
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+    setEditing(null);
+  };
+
   useEffect(() => {
-    console.log("Patient mounted");
     const fetchPatients = async () => {
       try {
         setLoading(true);
@@ -34,7 +46,7 @@ export default function PatientList() {
         if (!res.ok) throw new Error("Request failed");
         const data = await res.json();
         setPatient(data);
-      } catch (err) {
+      } catch {
         setError("Loading error");
       } finally {
         setLoading(false);
@@ -50,12 +62,24 @@ export default function PatientList() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   return (
     <div>
-      <button onClick={() => setOpen(true)}>➕ Add Patient</button>
-
-      <Modal isOpen={open} onClose={() => setOpen(false)}>
-        <PatientForm addPatient={addPatient} onSuccess={() => setOpen(false)} />
+      <button
+        onClick={() => {
+          setEditing(null); //add mode
+          setOpen(true);
+        }}
+      >
+        ➕ Add Patient
+      </button>
+      <Modal isOpen={open} onClose={closeModal}>
+        <PatientForm
+          initialData={editing ?? undefined}
+          onSubmit={editing ? updatePatient : addPatient}
+          onSuccess={closeModal}
+        />
       </Modal>
-
+      {message && (
+        <p style={{ color: "green", marginTop: "10px" }}>{message}</p>
+      )}
       <h2>Patient List</h2>
 
       <button onClick={() => setShowList((prev) => !prev)}>
@@ -66,8 +90,17 @@ export default function PatientList() {
         <ul>
           {patients.map((p) => (
             <li key={p.id}>
-              <strong>Name: {p.name}</strong> — Age: {p.age} — Gender:
-              {p.gender} — Phone: {p.phone}
+              <strong>Name: {p.name}</strong> —— Age: {p.age} —— Gender:
+              {p.gender} —— Phone: {p.phone} —— Address : {p.address}
+              <button
+                onClick={() => {
+                  setEditing(p); // edit mode
+                  setOpen(true);
+                }}
+              >
+                Edit
+              </button>
+              <button onClick={() => deletePatient(p.id)}>Delete</button>
             </li>
           ))}
         </ul>
