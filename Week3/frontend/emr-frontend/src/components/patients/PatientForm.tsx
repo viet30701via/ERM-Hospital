@@ -1,102 +1,71 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { Patient } from "../../models/Patient";
 import { Role, type Gender, PatientStatus } from "../../models/Type";
-import type { MedicalRecord } from "../../models/MedicalRecord";
-
-// interface FormData {
-//   name: string;
-//   age: string;
-//   gender: Gender;
-//   phone: string;
-//   address: string;
-//   conditions: string;
-// }
-// interface FormErrors {
-//   name?: string;
-//   age?: string;
-//   phone?: string;
-//   address?: string;
-//   conditions?: string;
-// }
+import useFormValidation from "../../hooks/useFormValidation";
+import InputField from "../ui/InputField";
+import SelectField from "../ui/SelectField";
+import Button from "../ui/Button";
 
 interface PatientFormProps {
   addPatient: (patient: Patient) => void;
+  onSuccess: () => void;
 }
-export default function PatientForm({ addPatient }: PatientFormProps) {
+export default function PatientForm({
+  addPatient,
+  onSuccess,
+}: PatientFormProps) {
   const [name, setName] = useState("");
   const [age, setAge] = useState<number>(0);
-  const [gender, setGender] = useState<"male" | "female">("male");
+  const [gender, setGender] = useState<Gender>("male");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const { errors, validate } = useFormValidation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!name.trim()) return alert("Name is not valid");
-    if (age <= 0) return alert("Age must be >0 ");
-    if (!/^[0-9]{10}$/.test(phone)) return alert("Phone must be 10 digits");
-    if (!address.trim()) return alert("Address not valid");
-
+    const ok = validate({ name, age, phone, address });
+    if (!ok) return;
     const newPatient: Patient = {
       id: "",
-      name,
+      name: name,
       age: age,
-      gender,
+      gender: "male",
       role: Role.Patient,
       conditions: "",
       status: PatientStatus.Active,
       medicalRecord: [],
-      phone,
-      address,
+      phone: phone,
+      address: address,
     };
-
     addPatient(newPatient);
-
-    //reset form after submit form
-    setName("");
-    setAge(0);
-    setPhone("");
-    setAddress("");
+    onSuccess();
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        maxWidth: "300px",
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       <h3>Add Patient</h3>
-
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-      />
-      <input
+      <InputField label="Name" value={name} onChange={setName} />
+      <InputField
+        label="Age"
         type="number"
-        value={age}
-        onChange={(e) => setAge(Number(e.target.value))}
-        placeholder="Age"
+        value={String(age)}
+        onChange={(v) => setAge(Number(v))}
       />
-      <select value={gender} onChange={(e) => setGender(e.target.value as any)}>
-        <option value="male">Male</option>
-        <option value="male">Female</option>
-      </select>
-      <input
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        placeholder="Phone"
+      <SelectField
+        label="Gender"
+        value={gender}
+        onChange={setGender}
+        options={["male", "female"]}
       />
-      <input
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        placeholder="Address"
-      />
-      <button type="submit">Add Patient</button>
+      <InputField label="Phone" value={phone} onChange={setPhone} />
+      <InputField label="Address" value={address} onChange={setAddress} />
+      {errors.map((e, i) => (
+        <p key={i} style={{ color: "red" }}>
+          {e}
+        </p>
+      ))}
+
+      <Button type="submit">Add Patient</Button>
     </form>
   );
 }
