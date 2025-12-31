@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import type { Patient } from "../../models/Patient";
 import PatientForm from "./PatientForm";
 import Modal from "../ui/Modal";
-// import styles from "./PatientList.module.css"; // Đảm bảo đúng đường dẫn css
 
 export default function PatientList() {
   // --- States ---
@@ -16,8 +15,6 @@ export default function PatientList() {
     type: "success" | "error";
     text: string;
   } | null>(null);
-
-  // --- Effects ---
   useEffect(() => {
     fetchPatients();
   }, []);
