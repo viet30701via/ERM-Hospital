@@ -31,7 +31,7 @@ const overlay: React.CSSProperties = {
 };
 
 const box: React.CSSProperties = {
-  background: "rgba(21, 72, 81, 0.5)",
+  background: "rgba(26, 127, 145, 0.5)",
   padding: "20px",
   borderRadius: "8px",
   minWidth: "400px",

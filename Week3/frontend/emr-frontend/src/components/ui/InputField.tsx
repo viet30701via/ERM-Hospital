@@ -3,6 +3,7 @@ type InputFieldProps = {
   value: string;
   onChange: (v: string) => void;
   type?: string;
+  className?: string;
 };
 
 export default function InputField({

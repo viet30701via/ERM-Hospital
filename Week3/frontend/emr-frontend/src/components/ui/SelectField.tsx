@@ -3,6 +3,7 @@ type SelectFieldProps = {
   value: string;
   onChange: (v: string) => void;
   options: string[];
+  className?: string;
 };
 
 export default function SelectField({

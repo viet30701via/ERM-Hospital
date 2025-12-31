@@ -5,6 +5,7 @@ import useFormValidation from "../../hooks/useFormValidation";
 import InputField from "../ui/InputField";
 import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
+import style from "./PatientForm.module.css";
 
 interface PatientFormProps {
   initialData?: Patient;
@@ -47,8 +48,6 @@ export default function PatientForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <h3>{initialData ? "Update Patient" : "Add Patient"}</h3>
-
       <InputField label="Name" value={name} onChange={setName} />
       <InputField
         label="Age"
