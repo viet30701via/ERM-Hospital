@@ -1,0 +1,30 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.inputField {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #d1d5db; /* xám nhạt */
+}
+
+.submitButton {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.9rem;
+}
