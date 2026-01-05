@@ -55,12 +55,12 @@ export default function PatientList() {
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const openAddModal = () => {
+  const openAddMode = () => {
     setEditingPatient(null);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (patient: Patient) => {
+  const openEditMode = (patient: Patient) => {
     setEditingPatient(patient);
     setIsModalOpen(true);
   };
@@ -89,7 +89,7 @@ export default function PatientList() {
       >
         {" "}
         <button
-          onClick={openAddModal}
+          onClick={openAddMode}
           style={{ backgroundColor: "#28a745", color: "white" }}
         >
           ➕ Add Patient
@@ -141,7 +141,7 @@ export default function PatientList() {
                 <td>{p.address}</td>
                 <td>
                   <button
-                    onClick={() => openEditModal(p)}
+                    onClick={() => openEditMode(p)}
                     style={{ marginRight: "5px" }}
                   >
                     Edit

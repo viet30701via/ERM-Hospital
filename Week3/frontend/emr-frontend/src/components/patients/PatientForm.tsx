@@ -5,7 +5,6 @@ import useFormValidation from "../../hooks/useFormValidation";
 import InputField from "../ui/InputField";
 import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
-import style from "./PatientForm.module.css";
 
 interface PatientFormProps {
   initialData?: Patient;
@@ -26,6 +25,11 @@ export default function PatientForm({
   const [address, setAddress] = useState(() => initialData?.address ?? "");
   const { errors, validate } = useFormValidation();
 
+  useEffect(() => {
+    validate({ name, age, phone, address });
+  }, [name, age, phone, address]);
+  const isFormValid =
+    !errors.name && !errors.age && !errors.phone && !errors.address;
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const ok = validate({ name, age, phone, address });
@@ -48,12 +52,18 @@ export default function PatientForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <InputField label="Name" value={name} onChange={setName} />
+      <InputField
+        label="Name"
+        value={name}
+        onChange={setName}
+        error={errors.name}
+      />
       <InputField
         label="Age"
         type="number"
         value={String(age)}
         onChange={(v) => setAge(Number(v))}
+        error={errors.age}
       />
       <SelectField
         label="Gender"
@@ -61,15 +71,20 @@ export default function PatientForm({
         onChange={setGender}
         options={["male", "female"]}
       />
-      <InputField label="Phone" value={phone} onChange={setPhone} />
-      <InputField label="Address" value={address} onChange={setAddress} />
-      {errors.map((e, i) => (
-        <p key={i} style={{ color: "red" }}>
-          {e}
-        </p>
-      ))}
+      <InputField
+        label="Phone"
+        value={phone}
+        onChange={setPhone}
+        error={errors.phone}
+      />
+      <InputField
+        label="Address"
+        value={address}
+        onChange={setAddress}
+        error={errors.address}
+      />
 
-      <Button type="submit">
+      <Button type="submit" disabled={!isFormValid}>
         {initialData ? "Update Patient" : "Add Patient"}
       </Button>
     </form>

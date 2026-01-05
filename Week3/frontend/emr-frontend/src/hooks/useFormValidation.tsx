@@ -1,24 +1,46 @@
 import { useState } from "react";
 
+interface PatientFormValues {
+  name: string;
+  age: number;
+  phone: string;
+  address: string;
+}
+
+interface PatientFormErrors {
+  name?: string;
+  age?: string;
+  phone?: string;
+  address?: string;
+}
+
+const VN_PHONE_REGEX = /^(0|\+84)(3|5|7|8|9)[0-9]{8}$/;
+
 export default function useFormValidation() {
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<PatientFormErrors>({});
 
-  const validate = (data: {
-    name: string;
-    age: number;
-    phone: string;
-    address: string;
-  }) => {
-    const list: string[] = [];
+  const validate = (values: PatientFormValues): boolean => {
+    const newErrors: PatientFormErrors = {};
 
-    if (!data.name.trim()) list.push("Name required");
-    if (data.age <= 0) list.push("Age must be > 0");
-    if (!/^[0-9]{10}$/.test(data.phone)) list.push("Phone must be 10 digits");
-    if (!data.address.trim()) list.push("Address required");
+    if (!values.name.trim()) {
+      newErrors.name = "Name is required";
+    }
 
-    setErrors(list);
+    if (values.age <= 0 || values.age > 120) {
+      newErrors.age = "Age must be between 0 and 120";
+    }
 
-    return list.length === 0;
+    if (!VN_PHONE_REGEX.test(values.phone)) {
+      newErrors.phone = "Invalid Vietnamese phone number";
+    }
+
+    if (!values.address.trim()) {
+      newErrors.address = "Address is required";
+    }
+
+    setErrors(newErrors);
+    //nếu ko có lỗi => mảng rỗng ===0 trả về true => cho phép gửi form
+    return Object.keys(newErrors).length === 0;
   };
 
   return { errors, validate };

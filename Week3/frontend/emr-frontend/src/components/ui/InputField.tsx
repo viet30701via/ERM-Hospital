@@ -4,6 +4,7 @@ type InputFieldProps = {
   onChange: (v: string) => void;
   type?: string;
   className?: string;
+  error?: string;
 };
 
 export default function InputField({
@@ -11,6 +12,7 @@ export default function InputField({
   value,
   onChange,
   type = "text",
+  error,
 }: InputFieldProps) {
   return (
     <div
@@ -34,6 +36,11 @@ export default function InputField({
           width: "100%",
         }}
       />
+      {error && (
+        <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
