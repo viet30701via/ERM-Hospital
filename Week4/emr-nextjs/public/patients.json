@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "age": 30,
+    "gender": "male",
+    "role": "Patient",
+    "conditions": "Diabetes",
+    "status": "Active",
+    "medicalRecord": [],
+    "phone" : "0988398236",
+    "address":"Ha Noi"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "age": 25,
+    "gender": "female",
+    "role": "Patient",
+    "conditions": "Asthma",
+    "status": "Active",
+    "medicalRecord": [],
+    "phone" : "0972178668",
+    "address":"Bac Ninh"
+  },
+  {
+    "id": "3",
+    "name": "Tom Lee",
+    "age": 40,
+    "gender": "male",
+    "role": "Patient",
+    "conditions": "Hypertension",
+    "status": "Inactive",
+    "medicalRecord": [],
+    "phone" : "0913035889",
+    "address":"Hung Yen"
+  }
+]
