@@ -1,5 +1,5 @@
 import type { IIdentifiable } from "./Base";
-import { Role, type Gender, PatientStatus } from "./Type";
+import { Role, type Gender, Status } from "./Type";
 import type { MedicalRecord } from "./MedicalRecord";
 export interface Patient extends IIdentifiable {
   name: string;
@@ -7,10 +7,10 @@ export interface Patient extends IIdentifiable {
   gender: Gender;
   role: Role.Patient;
   conditions: string;
-  status: PatientStatus;
+  status: Status;
   medicalRecord: MedicalRecord[]; // 1 bệnh nhan có nhiều medicalrecord
   phone: string;
   address: string;
 }
 
-export { Role, PatientStatus };
+export { Role, Status };

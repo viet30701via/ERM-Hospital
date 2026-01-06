@@ -1,22 +1,22 @@
-"use client";
 import React, { useEffect, useState } from "react";
-import type { Patient } from "../../types/Patient";
+import type { Doctor } from "@/app/types/Doctor";
 import { Role, type Gender, Status } from "../../types/Type";
-import useFormValidation from "../../hooks/useFormValidation";
+import useFormValidation from "@/app/hooks/useFormValidation";
 import InputField from "../ui/InputField";
 import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
 
-interface PatientFormProps {
-  initialData?: Patient;
-  onSubmit: (patient: Patient) => void;
+interface DoctorFormProps {
+  initialData?: Doctor;
+  onSubmit: (doctor: Doctor) => void;
   onSuccess: () => void;
 }
-export default function PatientForm({
+
+export default function DoctorForm({
   initialData,
   onSubmit,
   onSuccess,
-}: PatientFormProps) {
+}: DoctorFormProps) {
   const [name, setName] = useState(() => initialData?.name ?? "");
   const [age, setAge] = useState(() => initialData?.age ?? 0);
   const [gender, setGender] = useState<Gender>(
@@ -24,8 +24,11 @@ export default function PatientForm({
   );
   const [phone, setPhone] = useState(() => initialData?.phone ?? "");
   const [address, setAddress] = useState(() => initialData?.address ?? "");
-  const { errors, validate } = useFormValidation();
 
+  const [specialization, setSpecialization] = useState(
+    () => initialData?.specialization ?? ""
+  );
+  const { errors, validate } = useFormValidation();
   useEffect(() => {
     validate({ name, age, phone, address });
   }, [name, age, phone, address]);
@@ -33,28 +36,26 @@ export default function PatientForm({
     !errors.name && !errors.age && !errors.phone && !errors.address;
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = validate({ name, age, phone, address });
+    const ok = validate({ name, age, address, phone });
     if (!ok) return;
-    const patient: Patient = {
+    const doctor: Doctor = {
       id: initialData?.id ?? "",
       name: name,
       age: age,
       gender,
-      role: Role.Patient,
-      conditions: "",
-      status: Status.Active,
-      medicalRecord: [],
-      phone: phone,
       address: address,
+      phone: phone,
+      role: Role.Doctor,
+      specialization: specialization,
+      status: Status.Active,
     };
-    onSubmit(patient);
+    onSubmit(doctor);
     onSuccess();
   };
-
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-6">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-        {initialData ? "Update Patient" : "Add New Patient"}
+        {initialData ? "Update Doctor" : "Add New Doctor"}
       </h2>
 
       <form
@@ -76,6 +77,13 @@ export default function PatientForm({
           value={String(age)}
           onChange={(v) => setAge(Number(v))}
           error={errors.age}
+        />
+
+        {/* Specialization */}
+        <InputField
+          label="Specialization"
+          value={specialization}
+          onChange={setSpecialization}
         />
 
         {/* Gender */}
@@ -105,7 +113,7 @@ export default function PatientForm({
         {/* Button */}
         <div className="md:col-span-2 flex justify-end mt-4">
           <Button type="submit" disabled={!isFormValid}>
-            {initialData ? "Update Patient" : "Add Patient"}
+            {initialData ? "Update Doctor" : "Add Doctor"}
           </Button>
         </div>
       </form>

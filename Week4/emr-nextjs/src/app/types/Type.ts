@@ -5,7 +5,7 @@ export enum Role {
 
 export type Gender = "male" | "female" | "other";
 
-export enum PatientStatus {
+export enum Status {
   Active = "Active",
   Inactive = "Inactive",
 }

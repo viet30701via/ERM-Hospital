@@ -1,33 +1,33 @@
 "use client";
-import { useState, useEffect } from "react";
-import type { Patient } from "../../types/Patient";
-import PatientForm from "./PatientForm";
-import Modal from "../ui/Modal";
 
-export default function PatientList() {
-  // --- States ---
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
-  const [showList, setShowList] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(true);
+import { Doctor } from "@/app/types/Doctor";
+import { useEffect, useState } from "react";
+import Modal from "../ui/Modal";
+import DoctorForm from "./DoctorForm";
+
+export default function DoctorList() {
+  const [doctors, setDoctor] = useState<Doctor[]>([]);
+  const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+  const [showList, setShowList] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
+
   useEffect(() => {
-    fetchPatients();
+    fetchDoctor();
   }, []);
 
-  // --- Actions ---
-  const fetchPatients = async () => {
+  const fetchDoctor = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/patients.json");
+      const res = await fetch("/doctors.json");
       if (!res.ok) throw new Error("Loading fail");
       const data = await res.json();
-      setPatients(data);
+      setDoctor(data);
     } catch (err) {
       setError("Loading fail");
     } finally {
@@ -35,42 +35,37 @@ export default function PatientList() {
     }
   };
 
-  const handleAddPatient = (newPatient: Patient) => {
-    setPatients((prev) => [...prev, newPatient]);
-    showFeedback("Add Patient success !");
-  };
-
-  const handleUpdatePatient = (updated: Patient) => {
-    setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    showFeedback("Update Patient success !");
-  };
-
-  const handleDeletePatient = (id: string) => {
-    if (!window.confirm("Are you sure want to delete?")) return;
-    setPatients((prev) => prev.filter((p) => p.id !== id));
-    showFeedback("Delete Successfull");
-  };
-
   const showFeedback = (msg: string) => {
     setMessage({ type: "success", text: msg });
     setTimeout(() => setMessage(null), 3000);
   };
 
+  const handleAddDoctor = (newDoctor: Doctor) => {
+    setDoctor((prev) => [...prev, newDoctor]);
+    showFeedback("Add Doctor Successfull");
+  };
+
+  const handleUpdateDocter = (updated: Doctor) => {
+    setDoctor((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
+    showFeedback("Update Doctor success !");
+  };
+  const handleDeleteDocter = (id: string) => {
+    if (!window.confirm("Are you sure want to delete?")) return;
+    setDoctor((prev) => prev.filter((d) => d.id !== id));
+    showFeedback("Delete Successfull");
+  };
   const openAddMode = () => {
-    setEditingPatient(null);
+    setEditingDoctor(null);
     setIsModalOpen(true);
   };
-
-  const openEditMode = (patient: Patient) => {
-    setEditingPatient(patient);
+  const openEditMode = (doctor: Doctor) => {
+    setEditingDoctor(doctor);
     setIsModalOpen(true);
   };
-
   const closeModal = () => {
     setIsModalOpen(false);
-    setEditingPatient(null);
+    setEditingDoctor(null);
   };
-
   if (loading) return <div className="loading">Loading...</div>;
   if (error)
     return (
@@ -85,7 +80,7 @@ export default function PatientList() {
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Patient Management
+              Doctor Management
             </h1>
           </div>
           <button
@@ -93,7 +88,7 @@ export default function PatientList() {
             className="w-full md:w-auto bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 flex items-center justify-center gap-2"
           >
             <span className="text-xl">➕</span>
-            Add New Patient
+            Add New Doctor
           </button>
         </div>
 
@@ -119,7 +114,7 @@ export default function PatientList() {
             onClick={() => setShowList(!showList)}
             className="bg-white hover:bg-gray-50 text-gray-700 font-semibold py-2 px-6 rounded-lg shadow-md border border-gray-200 transition-all"
           >
-            {showList ? " Hide Patient List" : "Show Patient List"}
+            {showList ? " Hide Doctor List" : "Show Doctor List"}
           </button>
         </div>
 
@@ -130,10 +125,10 @@ export default function PatientList() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-left">
-                    <th className="px-6 py-4 font-semibold">Patient Name</th>
+                    <th className="px-6 py-4 font-semibold">Doctor Name</th>
                     <th className="px-6 py-4 font-semibold">Age</th>
                     <th className="px-6 py-4 font-semibold">Gender</th>
-                    <th className="px-6 py-4 font-semibold">Condition</th>
+                    <th className="px-6 py-4 font-semibold">Specialization</th>
                     <th className="px-6 py-4 font-semibold">Phone</th>
                     <th className="px-6 py-4 font-semibold">Address</th>
                     <th className="px-6 py-4 text-center font-semibold">
@@ -142,7 +137,7 @@ export default function PatientList() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {patients.map((p, index) => (
+                  {doctors.map((p, index) => (
                     <tr
                       key={p.id}
                       className={`hover:bg-blue-50 transition-colors ${
@@ -159,6 +154,7 @@ export default function PatientList() {
                           </span>
                         </div>
                       </td>
+
                       <td className="px-6 py-4 text-gray-700">{p.age}</td>
                       <td className="px-6 py-4">
                         <span
@@ -174,9 +170,8 @@ export default function PatientList() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-700">
-                        {p.conditions}
+                        {p.specialization}
                       </td>
-
                       <td className="px-6 py-4 text-gray-700">{p.phone}</td>
                       <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">
                         {p.address}
@@ -190,7 +185,7 @@ export default function PatientList() {
                             ✏️ Edit
                           </button>
                           <button
-                            onClick={() => handleDeletePatient(p.id)}
+                            onClick={() => handleDeleteDocter(p.id)}
                             className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow transition-all"
                           >
                             🗑️ Delete
@@ -208,13 +203,13 @@ export default function PatientList() {
         {/* Modal Form */}
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h3 className="text-2xl font-bold text-gray-800 mb-6">
-            {editingPatient
-              ? "✏️ Update Patient Information"
-              : "➕ Add New Patient"}
+            {editingDoctor
+              ? "✏️ Update Doctor Information"
+              : "➕ Add New Doctor"}
           </h3>
-          <PatientForm
-            initialData={editingPatient ?? undefined}
-            onSubmit={editingPatient ? handleUpdatePatient : handleAddPatient}
+          <DoctorForm
+            initialData={editingDoctor ?? undefined}
+            onSubmit={editingDoctor ? handleUpdateDocter : handleAddDoctor}
             onSuccess={closeModal}
           />
         </Modal>

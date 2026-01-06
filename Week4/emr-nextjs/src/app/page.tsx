@@ -1,6 +1,7 @@
-import Image from "next/image";
+import { redirect } from "next/navigation";
 import PatientList from "./components/patients/PatientList";
 
 export default function Home() {
-  return <PatientList />;
+  redirect("/dashboard/patients");
+  // return <PatientList />;
 }
