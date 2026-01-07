@@ -1,6 +1,6 @@
 "use client";
 
-import { Doctor } from "@/app/types/Doctor";
+import { Doctor } from "@/types/Doctor";
 import { useEffect, useState } from "react";
 import Modal from "../ui/Modal";
 import DoctorForm from "./DoctorForm";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import type { Doctor } from "@/app/types/Doctor";
+import { Doctor } from "@/types/Doctor";
 import { Role, type Gender, Status } from "../../types/Type";
-import useFormValidation from "@/app/hooks/useFormValidation";
+import useFormValidation from "@/hooks/useFormValidation";
 import InputField from "../ui/InputField";
 import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";

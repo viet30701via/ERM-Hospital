@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import type { Patient } from "../../types/Patient";
 import PatientForm from "./PatientForm";
 import Modal from "../ui/Modal";
+import Link from "next/link";
 
 export default function PatientList() {
   // --- States ---
@@ -150,14 +151,13 @@ export default function PatientList() {
                       }`}
                     >
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                            {p.name.charAt(0)}
+                        <Link href={`/medical-records/${p.id}`}>
+                          <div className="flex items-center gap-3 cursor-pointer hover:text-blue-600 transition">
+                            <span className="font-semibold text-gray-800">
+                              {p.name}
+                            </span>
                           </div>
-                          <span className="font-semibold text-gray-800">
-                            {p.name}
-                          </span>
-                        </div>
+                        </Link>
                       </td>
                       <td className="px-6 py-4 text-gray-700">{p.age}</td>
                       <td className="px-6 py-4">

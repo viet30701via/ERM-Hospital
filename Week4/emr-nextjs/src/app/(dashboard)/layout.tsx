@@ -14,24 +14,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       icon: "📊",
     },
     {
-      href: "/dashboard/patients",
+      href: "/patients",
       label: "Patients",
       icon: "👥",
     },
     {
-      href: "/dashboard/doctors",
+      href: "/doctors",
       label: "Doctors",
       icon: "👨‍⚕️",
     },
     {
-      href: "/dashboard/appointments",
+      href: "/appointments",
       label: "Appointments",
       icon: "📅",
-    },
-    {
-      href: "/dashboard/reports",
-      label: "Reports",
-      icon: "📈",
     },
   ];
 
@@ -170,11 +165,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               </h2>
               <p className="text-xs text-gray-500">
                 {pathName === "/dashboard" && "Welcome to your dashboard"}
-                {pathName === "/dashboard/patients" && "Manage patient records"}
-                {pathName === "/dashboard/doctors" && "Manage medical staff"}
-                {pathName === "/dashboard/appointments" &&
-                  "Schedule and appointments"}
-                {pathName === "/dashboard/reports" && "Analytics and reports"}
+                {pathName === "/patients" && "Manage patient records"}
+                {pathName === "/doctors" && "Manage medical staff"}
+                {pathName === "/appointments" && "Schedule and appointments"}
               </p>
             </div>
 
@@ -238,9 +231,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 </Link>
                 <Link href="/dashboard/doctors" className="hover:text-gray-700">
                   Doctors
-                </Link>
-                <Link href="/dashboard/reports" className="hover:text-gray-700">
-                  Reports
                 </Link>
               </div>
               <div className="flex gap-4">
