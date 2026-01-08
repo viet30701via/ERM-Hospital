@@ -1,8 +1,6 @@
-"use client";
 import { Patient } from "@/types/Patient";
-import { ok } from "assert";
+import { Metadata } from "next";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
 interface Prescription {
   id: string;
   medicalRecordId: string;
@@ -14,43 +12,46 @@ interface MedicalRecord {
   patientId: string;
   date: string;
   diagnosis: string;
-  presciption: Prescription[];
+  prescription: Prescription[];
 }
 
-export default function MedicalRecordDetailPage({
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  const patient = await getPatientData(id);
+
+  return {
+    title: `Hồ sơ: ${patient?.name || "Không tìm thấy"}`,
+  };
+}
+
+async function getPatientData(id: string): Promise<Patient | null> {
+  try {
+    const res = await fetch("http://localhost:3000/patients.json", {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data: Patient[] = await res.json();
+    return data.find((p) => String(p.id) === String(id)) || null;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    return null;
+  }
+}
+
+export default async function MedicalRecordDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = use(params);
-
-  const [patient, setPatients] = useState<Patient | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetchPatients();
-  }, [id]);
-
-  // --- Actions ---
-  const fetchPatients = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/patients.json");
-      if (!ok) throw new Error("Loading fail");
-      const data: Patient[] = await res.json();
-      console.log("1. Toàn bộ dữ liệu từ JSON:", data);
-      const findPatient = data.find((p) => p.id === id);
-      console.log("2. Bệnh nhân tìm thấy với ID " + id + ":", findPatient);
-      if (!findPatient) throw new Error("Cant find the patient");
-      setPatients(findPatient);
-    } catch (err) {
-      setError("Loading fail");
-    } finally {
-      setLoading(false);
-    }
-  };
-  if (error || !patient) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id;
+  const patient = await getPatientData(id);
+  if (!patient) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center bg-white p-8 rounded-2xl shadow-xl max-w-md">
@@ -303,113 +304,6 @@ export default function MedicalRecordDetailPage({
       </div>
 
       {/* Detailed Medical Records Section */}
-      <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-purple-500">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-          <span className="text-3xl">📝</span>
-          Complete Medical History
-        </h2>
-
-        {patient.medicalRecord && patient.medicalRecord.length > 0 ? (
-          <div className="space-y-6">
-            {patient.medicalRecord.map((record, index) => (
-              <div
-                key={record.id}
-                className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-6 hover:shadow-xl transition-all"
-              >
-                {/* Timeline Badge */}
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                    {index + 1}
-                  </div>
-                  <div>
-                    <p className="text-lg font-bold text-gray-800">
-                      {new Date(record.date).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      {new Date(record.date).toLocaleTimeString("en-US", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Record Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="bg-white p-5 rounded-xl shadow-md border-l-4 border-red-500">
-                    <p className="text-xs text-red-600 font-bold mb-2 uppercase tracking-wide">
-                      🔬 Diagnosis
-                    </p>
-                    <p className="text-lg font-bold text-gray-800">
-                      {record.diagnosis}
-                    </p>
-                  </div>
-
-                  <div className="bg-white p-5 rounded-xl shadow-md border-l-4 border-blue-500">
-                    <p className="text-xs text-blue-600 font-bold mb-2 uppercase tracking-wide">
-                      📋 Record ID
-                    </p>
-                    <p className="text-lg font-bold text-gray-800">
-                      {record.id}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Prescriptions Detail */}
-                {record.prescription && record.prescription.length > 0 && (
-                  <div className="bg-white rounded-xl p-5 shadow-md border-l-4 border-green-500">
-                    <p className="text-sm font-bold text-green-700 mb-4 flex items-center gap-2">
-                      <span className="text-2xl">💊</span>
-                      Prescribed Medications ({record.prescription.length})
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {record.prescription.map((presc, idx) => (
-                        <div
-                          key={presc.id}
-                          className="bg-green-50 border-2 border-green-200 rounded-lg p-4 hover:bg-green-100 transition"
-                        >
-                          <div className="flex items-start gap-3">
-                            <span className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-                              {idx + 1}
-                            </span>
-                            <div className="flex-1">
-                              <p className="font-bold text-gray-800 mb-1">
-                                {presc.medicine}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                <span className="font-semibold">Dosage:</span>{" "}
-                                {presc.dosage}
-                              </p>
-                              <p className="text-xs text-gray-500 mt-1">
-                                ID: {presc.id}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
-            <span className="text-8xl mb-6 block">🏥</span>
-            <p className="text-gray-600 text-xl font-semibold mb-2">
-              No medical history available
-            </p>
-            <p className="text-gray-500">
-              This patient has no recorded medical visits yet
-            </p>
-          </div>
-        )}
-      </div>
 
       {/* Back Button */}
       <div className="flex justify-center pb-8">

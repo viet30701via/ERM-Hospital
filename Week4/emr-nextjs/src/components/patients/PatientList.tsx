@@ -5,37 +5,22 @@ import PatientForm from "./PatientForm";
 import Modal from "../ui/Modal";
 import Link from "next/link";
 
-export default function PatientList() {
+export default function PatientList({
+  initialData,
+}: {
+  initialData: Patient[];
+}) {
   // --- States ---
-  const [patients, setPatients] = useState<Patient[]>([]);
+  const [patients, setPatients] = useState<Patient[]>(initialData);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [showList, setShowList] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
-  useEffect(() => {
-    fetchPatients();
-  }, []);
-
-  // --- Actions ---
-  const fetchPatients = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch("/patients.json");
-      if (!res.ok) throw new Error("Loading fail");
-      const data = await res.json();
-      setPatients(data);
-    } catch (err) {
-      setError("Loading fail");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleAddPatient = (newPatient: Patient) => {
     setPatients((prev) => [...prev, newPatient]);
     showFeedback("Add Patient success !");
