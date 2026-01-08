@@ -72,7 +72,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                 <span className="text-sm font-bold">A</span>
               </div>
-              <span className="text-sm font-medium">Admin</span>
+              <button
+                onClick={() => {
+                  // Delete cookie
+                  document.cookie = "auth-token=; path=/; max-age=0";
+                  // Redirect to login
+                  window.location.href = "/login";
+                }}
+                className="ml-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-semibold transition"
+              >
+                🚪 Logout
+              </button>
             </div>
           </nav>
         </div>
