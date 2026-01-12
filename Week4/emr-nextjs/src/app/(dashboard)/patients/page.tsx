@@ -1,6 +1,6 @@
 import PatientList from "@/components/patients/PatientList";
-export const metadata = {
-  title: "EMR Hospital - Quản lý Bệnh nhân",
+export const generateMetadata = {
+  title: "EMR - Quản lý Bệnh nhân",
   description: "Danh sách và quản lý thông tin bệnh nhân trong hệ thống EMR",
 };
 //SSR

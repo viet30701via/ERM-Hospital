@@ -1,6 +1,7 @@
+import { Inter } from "next/font/google";
 import "./globals.css";
-import { ReactNode } from "react";
 
+const inter = Inter({ subsets: ["latin"] });
 // Metadata cho SEO
 export const metadata = {
   title: "EMR Hospital - Quản lý Bệnh nhân",
@@ -15,10 +16,14 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="vi">
-      <body className="m-0 p-0 antialiased">{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

@@ -2,7 +2,6 @@
 import { useState, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathName = usePathname();

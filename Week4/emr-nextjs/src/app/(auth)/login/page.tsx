@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import InputField from "@/components/ui/InputField";
-import Button from "@/components/ui/Button";
 import { toast, Toaster } from "react-hot-toast";
 export default function LoginPage() {
   const router = useRouter();
@@ -27,7 +26,7 @@ export default function LoginPage() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       if (email === "admin@gmail.com" && password === "123") {
-        document.cookie = "auth-token=demo-token-123; path=/; max-age=86400";
+        document.cookie = "auth-token=demo-token-123; path=/; max-age=86400"; //cookie tồn tại trong trình duyệt 24h 
         router.push("/dashboard");
       } else {
         setError("Invalid email or password");

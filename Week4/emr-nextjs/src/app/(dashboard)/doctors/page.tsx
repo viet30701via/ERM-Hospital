@@ -1,7 +1,7 @@
 import DoctorList from "@/components/doctors/DoctorList";
 export const metadata = {
-  title: "EMR Hospital - Quản lý Bệnh nhân",
-  description: "Danh sách và quản lý thông tin bệnh nhân trong hệ thống EMR",
+  title: "EMR Hospital - Quản lý bác sĩ",
+  description: "Danh sách và quản lý thông tin bác sĩ",
 };
 
 export default function DoctorPage() {

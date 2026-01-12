@@ -1,4 +1,4 @@
-import type { Patient } from "../models/Patient";
+import type { Patient } from "@/types/Patient";
 
 interface PatientCardProps {
   patient: Patient;

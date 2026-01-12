@@ -6,7 +6,6 @@ export const metadata = {
 };
 
 export default function DashboardPage() {
-  // Dữ liệu giả lập (sau này sẽ fetch từ API)
   const stats = {
     totalPatients: 1234,
     todayAppointments: 45,
