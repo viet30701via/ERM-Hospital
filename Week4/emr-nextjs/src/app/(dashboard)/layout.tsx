@@ -2,6 +2,7 @@
 import { useState, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathName = usePathname();
@@ -225,6 +226,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
           {/* Main Content - Scrollable */}
           <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+            <Breadcrumbs />
             {children}
           </main>
 
