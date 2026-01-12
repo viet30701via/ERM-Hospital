@@ -7,16 +7,24 @@ export const metadata = {
 
 async function getPatients() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
 
-    const res = await fetch(`${baseUrl}/patients.json`, {
+    if (!baseUrl && process.env.NODE_ENV === "production") {
+      console.error("Missing NEXT_PUBLIC_APP_URL on Vercel");
+      return [];
+    }
+
+    const finalUrl = baseUrl
+      ? `${baseUrl}/patients.json`
+      : "http://localhost:3000/patients.json";
+
+    const res = await fetch(finalUrl, {
       cache: "no-store",
     });
 
     if (!res.ok) return [];
     return res.json();
   } catch (error) {
-    console.error("Fetch error:", error);
     return [];
   }
 }
