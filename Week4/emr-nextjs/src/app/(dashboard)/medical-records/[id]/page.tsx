@@ -20,29 +20,32 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const resolvedParams = await params;
-  const id = resolvedParams.id;
+  const { id } = await params;
   const patient = await getPatientData(id);
 
   return {
     title: `Hồ sơ: ${patient?.name || "Không tìm thấy"}`,
+    description: `Chi tiết bệnh án của bệnh nhân ${patient?.name || id}`,
   };
 }
 
 async function getPatientData(id: string): Promise<Patient | null> {
   try {
-    const res = await fetch("http://localhost:3000/patients.json", {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    const res = await fetch(`${baseUrl}/patients.json`, {
       cache: "no-store",
     });
+
     if (!res.ok) return null;
     const data: Patient[] = await res.json();
+
     return data.find((p) => String(p.id) === String(id)) || null;
   } catch (error) {
     console.error("Fetch error:", error);
     return null;
   }
 }
-
 export default async function MedicalRecordDetailPage({
   params,
 }: {
