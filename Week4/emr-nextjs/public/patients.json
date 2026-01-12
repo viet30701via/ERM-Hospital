@@ -1,0 +1,89 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "age": 30,
+    "gender": "male",
+    "role": "patient",
+    "conditions": "Diabetes",
+    "status": "Active",
+    "phone": "0988398236",
+    "address": "Ha Noi",
+    "medicalRecord": [
+      {
+        "id": "mr-101",
+        "patientId": "1",
+        "date": "2025-10-25T08:30:00Z",
+        "diagnosis": "Type 2 Diabetes Control",
+        "prescription": [
+          {
+            "id": "pre-501",
+            "medicalRecordId": "mr-101",
+            "medicine": "Metformin",
+            "dosage": "500mg, twice daily"
+          },
+          {
+            "id": "pre-502",
+            "medicalRecordId": "mr-101",
+            "medicine": "Vitamin B12",
+            "dosage": "1 tablet daily"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "age": 25,
+    "gender": "female",
+    "role": "patient",
+    "conditions": "Asthma",
+    "status": "Active",
+    "phone": "0972178668",
+    "address": "Bac Ninh",
+    "medicalRecord": [
+      {
+        "id": "mr-102",
+        "patientId": "2",
+        "date": "2025-11-12T14:15:00Z",
+        "diagnosis": "Acute Asthma Attack",
+        "prescription": [
+          {
+            "id": "pre-503",
+            "medicalRecordId": "mr-102",
+            "medicine": "Albuterol Inhaler",
+            "dosage": "2 puffs every 4 hours as needed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Tom Lee",
+    "age": 40,
+    "gender": "male",
+    "role": "patient",
+    "conditions": "Hypertension",
+    "status": "Inactive",
+    "phone": "0913035889",
+    "address": "Hung Yen",
+    "medicalRecord": [
+      {
+        "id": "mr-103",
+        "patientId": "3",
+        "date": "2025-11-12T14:15:00Z",
+        "diagnosis": "Stomach-ache",
+        "prescription": [
+          {
+            "id": "pre-505",
+            "medicalRecordId": "mr-103",
+            "medicine": "Antacids ",
+            "dosage": "1 puffs every 6 hours as needed"
+          }
+        ]
+      }
+    ]
+  }
+]
