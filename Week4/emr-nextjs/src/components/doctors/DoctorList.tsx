@@ -1,7 +1,7 @@
 "use client";
 
 import { Doctor } from "@/types/Doctor";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "../ui/Modal";
 import DoctorForm from "./DoctorForm";
 
@@ -17,23 +17,29 @@ export default function DoctorList() {
     text: string;
   } | null>(null);
 
-  useEffect(() => {
-    fetchDoctor();
-  }, []);
-
-  const fetchDoctor = async () => {
+  const fetchDoctor = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch("/doctors.json");
-      if (!res.ok) throw new Error("Loading fail");
+      setError("");
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
+      const res = await fetch(`${baseUrl}/doctors.json`, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) throw new Error("Can not loading doctor list");
       const data = await res.json();
       setDoctor(data);
     } catch (err) {
-      setError("Loading fail");
+      console.error("Fetch error:", err);
+      setError("Failed to loading.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDoctor();
+  }, [fetchDoctor]);
 
   const showFeedback = (msg: string) => {
     setMessage({ type: "success", text: msg });
