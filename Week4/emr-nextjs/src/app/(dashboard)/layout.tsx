@@ -234,13 +234,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           <footer className="bg-white border-t border-gray-200 px-6 py-3">
             <div className="flex justify-between items-center text-xs text-gray-500">
               <div className="flex gap-4">
-                <Link
-                  href="/dashboard/patients"
-                  className="hover:text-gray-700"
-                >
+                <Link href="/patients" className="hover:text-gray-700">
                   Patients
                 </Link>
-                <Link href="/dashboard/doctors" className="hover:text-gray-700">
+                <Link href="/doctors" className="hover:text-gray-700">
                   Doctors
                 </Link>
               </div>
