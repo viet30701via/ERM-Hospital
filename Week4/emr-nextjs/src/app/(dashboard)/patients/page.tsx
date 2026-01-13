@@ -7,7 +7,7 @@ export const metadata = {
 
 async function getPatients() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
 
     const res = await fetch(`${baseUrl}/data/patients.json`, {
       cache: "no-store",
