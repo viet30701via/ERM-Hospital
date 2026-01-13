@@ -33,7 +33,7 @@ async function getPatientData(id: string): Promise<Patient | null> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-    const res = await fetch(`${baseUrl}/patients.json`, {
+    const res = await fetch(`${baseUrl}/data/patients.json`, {
       cache: "no-store",
     });
 
