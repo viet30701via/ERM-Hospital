@@ -236,7 +236,7 @@ export default function DashboardPage() {
                     {patient.status}
                   </span>
                   <Link
-                    href={`/dashboard/medical-records/${patient.id}`}
+                    href={`/medical-records/${patient.id}`}
                     className="text-blue-600 hover:text-blue-700"
                   >
                     <svg
