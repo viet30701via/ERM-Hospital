@@ -54,18 +54,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             >
               Dashboard
             </Link>
-            <Link
-              href="/about"
-              className="text-sm hover:text-blue-200 transition"
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm hover:text-blue-200 transition"
-            >
-              Contact
-            </Link>
 
             {/* User Profile */}
             <div className="flex items-center gap-2 ml-4">
