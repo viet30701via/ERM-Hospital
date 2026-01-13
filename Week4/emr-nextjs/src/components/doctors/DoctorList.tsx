@@ -22,7 +22,7 @@ export default function DoctorList() {
       setLoading(true);
       setError("");
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
-      const res = await fetch(`${baseUrl}/doctors.json`, {
+      const res = await fetch(`${baseUrl}/data/doctors.json`, {
         cache: "no-store",
       });
 
