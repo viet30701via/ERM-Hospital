@@ -1,0 +1,46 @@
+[
+  {
+    "id": "DOC-001",
+    "name": "Frank Lampard",
+    "age": 45,
+    "gender": "male",
+    "address": "123 Đường Lê Lợi, Quận 1, TP.HCM",
+    "phone": "0901234567",
+    "role": "Doctor",
+    "specialization": "Internal medicine",
+    "status": "Active"
+  },
+  {
+    "id": "DOC-002",
+    "name": "Reec James",
+    "age": 38,
+    "gender": "female",
+    "address": "456 Đường Nguyễn Huệ, Quận Hải Châu, Đà Nẵng",
+    "phone": "0912345678",
+    "role": "Doctor",
+    "specialization": "Paediatrics",
+    "status": "Active"
+  },
+  {
+    "id": "DOC-003",
+    "name": "Park Ji Sung",
+    "age": 50,
+    "gender": "male",
+    "address": "789 Đường Láng, Quận Đống Đa, Hà Nội",
+    "phone": "0987654321",
+    "role": "Doctor",
+    "specialization": "cardiovascular",
+    "status": "Inactive"
+  },
+  {
+    "id": "DOC-004",
+    "name": "Rooney",
+    "age": 32,
+    "gender": "male",
+    "address": "101 Trần Hưng Đạo, Cần Thơ",
+    "phone": "0933445566",
+    "role": "Doctor",
+    "specialization": "Dermatology",
+    "status": "Inactive"
+  }
+]
