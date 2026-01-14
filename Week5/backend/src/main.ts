@@ -4,8 +4,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/exceptionGlobal';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   //Lay port tu env thong qua configservice
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
