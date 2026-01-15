@@ -1,38 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto ';
-import { v4 as uuidv4 } from 'uuid';
 import { PatientNotFoundException } from './exception/patient-not-found-exception';
 import { Patient } from './entities/patient.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+export interface DeleteResponse {
+  message: string;
+}
 @Injectable()
 export class PatientsService {
-  private patients: Patient[] = [];
+  constructor(@InjectModel(Patient.name) private patient: Model<Patient>) {}
 
-  create(dto: CreatePatientDto): Patient {
-    const newPatient: Patient = {
-      id: uuidv4(),
-      ...dto,
-    };
-    this.patients.push(newPatient);
-    return newPatient;
+  async create(dto: CreatePatientDto): Promise<Patient> {
+    const createdPatient = new this.patient(dto);
+    return await createdPatient.save();
   }
 
-  findAll(): Patient[] {
-    return this.patients;
+  async findAll(): Promise<Patient[]> {
+    return await this.patient.find().exec();
   }
-  findOne(id: string) {
-    const patient = this.patients.find((p) => p.id === id);
+
+  async findOne(id: string): Promise<Patient> {
+    const patient = await this.patient.findById(id).exec();
     if (!patient) {
       throw new PatientNotFoundException(id);
     }
     return patient;
   }
-  update(id: string, dto: UpdatePatientDto) {
-    const index = this.patients.findIndex((p) => p.id === id);
-    if (index === -1) {
+
+  async update(
+    id: string,
+    updatePatientDto: UpdatePatientDto,
+  ): Promise<Patient> {
+    const updatedPatient = await this.patient
+      .findByIdAndUpdate(id, updatePatientDto, { new: true })
+      .exec();
+    if (!updatedPatient) {
       throw new PatientNotFoundException(id);
     }
-    this.patients[index] = { ...this.patients[index], ...dto };
-    return this.patients[index];
+    return updatedPatient;
+  }
+
+  async remove(id: string): Promise<DeleteResponse> {
+    const result = await this.patient.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new PatientNotFoundException(id);
+    }
+    return { message: 'Delete Successfull' };
   }
 }

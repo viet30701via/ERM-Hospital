@@ -3,11 +3,11 @@ import {
   Post,
   Body,
   Get,
-  Patch,
   Param,
   HttpCode,
   HttpStatus,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
@@ -19,19 +19,27 @@ export class PatientsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createPatientDto: CreatePatientDto) {
-    return this.patientsService.create(createPatientDto);
+  async create(@Body() dto: CreatePatientDto) {
+    return await this.patientsService.create(dto);
   }
   @Get()
-  findAll() {
-    return this.patientsService.findAll();
+  async findAll() {
+    return await this.patientsService.findAll();
   }
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.patientsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.patientsService.findOne(id);
   }
   @Put(':id')
-  update(@Param('id') id: string, @Body() updatepatientDto: UpdatePatientDto) {
-    return this.patientsService.update(id, updatepatientDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updatepatientDto: UpdatePatientDto,
+  ) {
+    return await this.patientsService.update(id, updatepatientDto);
+  }
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async remove(@Param('id') id: string) {
+    return await this.patientsService.remove(id);
   }
 }
