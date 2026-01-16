@@ -1,13 +1,13 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/exceptionGlobal';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  const reflector = app.get(Reflector);
   //Lay port tu env thong qua configservice
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
@@ -33,6 +33,7 @@ async function bootstrap() {
   });
   app.useGlobalFilters(new HttpExceptionFilter());
   console.log(`Server EMR đang chạy chạy :http//localhost:${port}`);
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
   await app.listen(port);
 }
 bootstrap();

@@ -26,7 +26,6 @@ export class AuthService {
 
     return {
       id: user.id,
-      password: user.password,
       role: user.role,
     };
   }
