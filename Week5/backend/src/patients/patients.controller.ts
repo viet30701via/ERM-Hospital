@@ -1,53 +1,58 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Controller,
+  Get,
   Post,
   Body,
-  Get,
-  Param,
-  HttpCode,
-  HttpStatus,
   Put,
+  Param,
   Delete,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto ';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/role/roles.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/role/roles.guard';
 import { Roles } from 'src/auth/role/roles.decoorator';
-import { Role } from 'src/auth/role/roles.enum';
 
 @Controller('patients')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
-  @Roles(Role.ADMIN)
+
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: CreatePatientDto) {
-    return await this.patientsService.create(dto);
+  @Roles('admin', 'doctor')
+  create(@Body() createPatientDto: CreatePatientDto, @Request() req) {
+    return this.patientsService.create(createPatientDto, req.user);
   }
+
   @Get()
-  async findAll() {
-    return await this.patientsService.findAll();
+  @Roles('admin', 'doctor', 'nurse')
+  findAll(@Request() req) {
+    return this.patientsService.findAll(req.user);
   }
+
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.patientsService.findOne(id);
+  @Roles('admin', 'doctor', 'nurse')
+  findOne(@Param('id') id: string, @Request() req) {
+    return this.patientsService.findOne(id, req.user);
   }
-  @Roles(Role.ADMIN)
+
   @Put(':id')
-  async update(
+  @Roles('admin', 'doctor')
+  update(
     @Param('id') id: string,
-    @Body() updatepatientDto: UpdatePatientDto,
+    @Body() updatePatientDto: UpdatePatientDto,
+    @Request() req,
   ) {
-    return await this.patientsService.update(id, updatepatientDto);
+    return this.patientsService.update(id, updatePatientDto, req.user);
   }
-  @Roles(Role.ADMIN)
+
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string) {
-    return await this.patientsService.remove(id);
+  @Roles('admin')
+  remove(@Param('id') id: string, @Request() req) {
+    return this.patientsService.remove(id, req.user);
   }
 }

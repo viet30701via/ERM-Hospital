@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto ';
 import { PatientNotFoundException } from './exception/patient-not-found-exception';
 import { Patient } from './entities/patient.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
+import { PatientDocument } from './schemas/patients.schema';
 export interface DeleteResponse {
   message: string;
 }
@@ -12,41 +19,56 @@ export interface DeleteResponse {
 export class PatientsService {
   constructor(@InjectModel(Patient.name) private patient: Model<Patient>) {}
 
-  async create(dto: CreatePatientDto): Promise<Patient> {
-    const createdPatient = new this.patient(dto);
-    return await createdPatient.save();
-  }
-
-  async findAll(): Promise<Patient[]> {
-    return await this.patient.find().exec();
-  }
-
-  async findOne(id: string): Promise<Patient> {
-    const patient = await this.patient.findById(id).exec();
+  async checkOwnership(patientId: string, user: any): Promise<PatientDocument> {
+    const patient = await this.patient.findById(patientId).exec();
     if (!patient) {
-      throw new PatientNotFoundException(id);
+      throw new PatientNotFoundException(patientId);
+    }
+    if (user.role !== 'admin' && patient.doctorId.toString() !== user.userId) {
+      throw new ForbiddenException('You dont hanve acces');
     }
     return patient;
   }
 
-  async update(
-    id: string,
-    updatePatientDto: UpdatePatientDto,
-  ): Promise<Patient> {
-    const updatedPatient = await this.patient
-      .findByIdAndUpdate(id, updatePatientDto, { new: true })
-      .exec();
-    if (!updatedPatient) {
-      throw new PatientNotFoundException(id);
-    }
-    return updatedPatient;
+  async create(dto: CreatePatientDto, user: any): Promise<PatientDocument> {
+    const newPatient = new this.patient({
+      ...dto,
+      doctorId: new Types.ObjectId(user.userId),
+    });
+    return newPatient.save();
   }
 
-  async remove(id: string): Promise<DeleteResponse> {
+  async update(
+    id: string,
+    dto: UpdatePatientDto,
+    user: any,
+  ): Promise<PatientDocument> {
+    await this.checkOwnership(id, user);
+    const updatePatient = await this.patient
+      .findByIdAndUpdate(id, dto, { new: true })
+      .exec();
+    if (!updatePatient) throw new NotFoundException('Update failed');
+    return updatePatient;
+  }
+
+  async remove(id: string, user: any): Promise<DeleteResponse> {
+    await this.checkOwnership(id, user);
     const result = await this.patient.findByIdAndDelete(id).exec();
-    if (!result) {
-      throw new PatientNotFoundException(id);
+    if (!result) throw new NotFoundException('Delete failed');
+    return { message: 'Delete successfull' };
+  }
+
+  async findAll(user: any): Promise<PatientDocument[]> {
+    if (user.role === 'admin') {
+      return this.patient.find().exec();
     }
-    return { message: 'Delete Successfull' };
+    const filter = {
+      doctorId: new Types.ObjectId(user.userId),
+    };
+
+    return this.patient.find(filter).exec();
+  }
+  async findOne(id: string, user: any): Promise<PatientDocument> {
+    return this.checkOwnership(id, user);
   }
 }

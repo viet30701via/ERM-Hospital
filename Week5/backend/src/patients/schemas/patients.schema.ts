@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type PatientDocument = Patient & Document;
 
@@ -20,6 +20,13 @@ export class Patient {
   @Prop()
   address: string;
 
+  @Prop({ type: Types.ObjectId, ref: 'User' })
+  doctorId: Types.ObjectId;
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
   @Prop({ default: 'Active' })
   status: string;
 }
