@@ -5,12 +5,24 @@ import { HttpExceptionFilter } from './common/filters/exceptionGlobal';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const reflector = app.get(Reflector);
-  //Lay port tu env thong qua configservice
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT') || 3000;
+  const port = configService.get<number>('PORT') || 3001;
+  const nodeEnv = configService.get<string>('NODE_ENV') || 'development';
+  // 1. Helmet: Bảo mật HTTP headers
+  app.use(helmet());
+  // 2. CORS Strict: Chỉ cho phép Origin từ Frontend
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization',
+  });
+
+  // 3. Validation Global
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,22 +30,20 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  const config = new DocumentBuilder()
-    .setTitle('EMR Patient System')
-    .setDescription('Hệ thống quản lý bệnh nhân API')
-    .setVersion('1.0')
-    .addTag('patients')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-  app.enableCors({
-    origin: 'http://localhost:3000', // Accept front end nextjs
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+  if (nodeEnv !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('EMR Patient System')
+      .setDescription('Hệ thống quản lý bệnh nhân API')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document);
+  }
+  // 5. Global Filters & Guards
   app.useGlobalFilters(new HttpExceptionFilter());
-  console.log(`Server EMR đang chạy chạy :http//localhost:${port}`);
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();

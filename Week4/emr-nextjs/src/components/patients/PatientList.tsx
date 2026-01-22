@@ -5,11 +5,7 @@ import PatientForm from "./PatientForm";
 import Modal from "../ui/Modal";
 import Link from "next/link";
 
-export default function PatientList({
-  initialData,
-}: {
-  initialData: Patient[];
-}) {
+export default function PatientList({ initialData }: { initialData: Patient[] }) {
   // --- States ---
   const [patients, setPatients] = useState<Patient[]>(initialData);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
@@ -70,9 +66,7 @@ export default function PatientList({
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Patient Management
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Patient Management</h1>
           </div>
           <button
             onClick={openAddMode}
@@ -122,25 +116,19 @@ export default function PatientList({
                     <th className="px-6 py-4 font-semibold">Condition</th>
                     <th className="px-6 py-4 font-semibold">Phone</th>
                     <th className="px-6 py-4 font-semibold">Address</th>
-                    <th className="px-6 py-4 text-center font-semibold">
-                      Actions
-                    </th>
+                    <th className="px-6 py-4 text-center font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {patients.map((p, index) => (
                     <tr
                       key={p.id}
-                      className={`hover:bg-blue-50 transition-colors ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      }`}
+                      className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                     >
                       <td className="px-6 py-4">
                         <Link href={`/medical-records/${p.id}`}>
                           <div className="flex items-center gap-3 cursor-pointer hover:text-blue-600 transition">
-                            <span className="font-semibold text-gray-800">
-                              {p.name}
-                            </span>
+                            <span className="font-semibold text-gray-800">{p.name}</span>
                           </div>
                         </Link>
                       </td>
@@ -151,21 +139,17 @@ export default function PatientList({
                             p.gender.toString() === "Male"
                               ? "bg-blue-100 text-blue-800"
                               : p.gender.toString() === "Female"
-                              ? "bg-pink-100 text-pink-800"
-                              : "bg-purple-100 text-purple-800"
+                                ? "bg-pink-100 text-pink-800"
+                                : "bg-purple-100 text-purple-800"
                           }`}
                         >
                           {p.gender}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-700">
-                        {p.conditions}
-                      </td>
+                      <td className="px-6 py-4 text-gray-700">{p.conditions}</td>
 
                       <td className="px-6 py-4 text-gray-700">{p.phone}</td>
-                      <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">
-                        {p.address}
-                      </td>
+                      <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">{p.address}</td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-2">
                           <button
@@ -193,9 +177,7 @@ export default function PatientList({
         {/* Modal Form */}
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h3 className="text-2xl font-bold text-gray-800 mb-6">
-            {editingPatient
-              ? "✏️ Update Patient Information"
-              : "➕ Add New Patient"}
+            {editingPatient ? "✏️ Update Patient Information" : "➕ Add New Patient"}
           </h3>
           <PatientForm
             initialData={editingPatient ?? undefined}

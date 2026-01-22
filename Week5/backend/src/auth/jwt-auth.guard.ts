@@ -20,9 +20,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass(),
     ]);
     if (isPublic) {
-      return true; // if @Public()=>pass
+      return true;
     }
-    return super.canActivate(context); // Ngược lại thì kiểm tra JWT
+    return super.canActivate(context);
   }
   handleRequest(err: any, user: any, info: any) {
     if (err || !user) {

@@ -16,7 +16,9 @@ import { UpdatePatientDto } from './dto/update-patient.dto ';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/role/roles.guard';
 import { Roles } from 'src/auth/role/roles.decoorator';
-
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+@ApiTags('patients')
+@ApiBearerAuth()
 @Controller('patients')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class PatientsController {

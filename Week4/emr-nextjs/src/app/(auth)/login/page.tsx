@@ -25,43 +25,33 @@ function LoginFormContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      if (email === "admin@gmail.com" && password === "123") {
-        document.cookie = "auth-token=demo-token-123; path=/; max-age=86400";
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("access_token", data.access_token);
         router.push("/dashboard");
       } else {
-        setError("Invalid email or password");
+        setError(data.message || "Email or password invalid");
       }
-    } catch {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      setError("Cannot connect to Server (Port 3001)");
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <InputField
-        label="Email"
-        type="email"
-        value={email}
-        onChange={setEmail}
-      />
-      <InputField
-        label="Password"
-        type="password"
-        value={password}
-        onChange={setPassword}
-      />
+      <InputField label="Email" type="email" value={email} onChange={setEmail} />
+      <InputField label="Password" type="password" value={password} onChange={setPassword} />
 
-      {error && (
-        <div className="text-sm text-red-700 bg-red-50 p-2 rounded-md border border-red-100">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-sm text-red-700 bg-red-50 p-2 rounded-md border border-red-100">{error}</div>}
 
       <button
         type="submit"
@@ -83,17 +73,11 @@ export default function LoginPage() {
           <div className="w-14 h-14 mx-auto bg-blue-600 text-white rounded-lg flex items-center justify-center text-2xl shadow">
             🏥
           </div>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900">
-            EMR Hospital
-          </h1>
+          <h1 className="mt-4 text-2xl font-bold text-gray-900">EMR Hospital</h1>
           <p className="text-gray-500">Sign in to your account</p>
         </div>
 
-        <Suspense
-          fallback={
-            <div className="text-center py-4">Loading login form...</div>
-          }
-        >
+        <Suspense fallback={<div className="text-center py-4">Loading login form...</div>}>
           <LoginFormContent />
         </Suspense>
       </div>
