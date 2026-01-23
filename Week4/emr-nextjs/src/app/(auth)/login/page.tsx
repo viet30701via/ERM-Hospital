@@ -12,11 +12,11 @@ function LoginFormContent() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const base_url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   useEffect(() => {
     const message = searchParams.get("message");
     if (message === "unauthorized") {
-      toast.error("Login in to access!", {
+      toast.error("Login failed!", {
         duration: 4000,
         position: "top-center",
       });
@@ -27,7 +27,7 @@ function LoginFormContent() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await fetch(`${base_url}/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -37,8 +37,10 @@ function LoginFormContent() {
 
       if (res.ok) {
         localStorage.setItem("access_token", data.access_token);
+        document.cookie = `auth-token=${data.access_token}; Path=/; Max-Age=86400; SameSite=Lax`;
         router.push("/dashboard");
       } else {
+        setLoading(false);
         setError(data.message || "Email or password invalid");
       }
     } catch (err) {

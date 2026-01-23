@@ -4,40 +4,49 @@ import type { Patient } from "../../types/Patient";
 import PatientForm from "./PatientForm";
 import Modal from "../ui/Modal";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { apiRequest } from "@/lib/api";
 
 export default function PatientList({ initialData }: { initialData: Patient[] }) {
-  // --- States ---
+  const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>(initialData);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [showList, setShowList] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
-  const handleAddPatient = (newPatient: Patient) => {
-    setPatients((prev) => [...prev, newPatient]);
-    showFeedback("Add Patient success !");
-  };
-
-  const handleUpdatePatient = (updated: Patient) => {
-    setPatients((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
-    showFeedback("Update Patient success !");
-  };
-
-  const handleDeletePatient = (id: string) => {
-    if (!window.confirm("Are you sure want to delete?")) return;
-    setPatients((prev) => prev.filter((p) => p.id !== id));
-    showFeedback("Delete Successfull");
-  };
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const showFeedback = (msg: string) => {
     setMessage({ type: "success", text: msg });
     setTimeout(() => setMessage(null), 3000);
   };
 
+  const handleAddPatient = (newPatient: Patient) => {
+    setPatients((prev) => [...prev, newPatient]);
+    showFeedback("Add Patient success !");
+  };
+
+  const handleUpdatePatient = (updated: Patient) => {
+    setPatients((prev) => prev.map((p) => (p._id === updated._id ? updated : p)));
+    showFeedback("Update Patient success !");
+  };
+  const handleDelete = async (_id: string) => {
+    if (!window.confirm("Are you sure to delete this patient?")) return;
+    try {
+      const res = await apiRequest(`/patients/${_id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setPatients((prev) => prev.filter((p) => p._id !== _id));
+        showFeedback("Delete Patient success !");
+      } else if (res.status === 403) {
+        setMessage({ type: "error", text: "You don't have permission to perform this action." });
+      }
+    } catch (error) {
+      showFeedback("An error occurred. Please try again.");
+    }
+  };
   const openAddMode = () => {
     setEditingPatient(null);
     setIsModalOpen(true);
@@ -113,7 +122,6 @@ export default function PatientList({ initialData }: { initialData: Patient[] })
                     <th className="px-6 py-4 font-semibold">Patient Name</th>
                     <th className="px-6 py-4 font-semibold">Age</th>
                     <th className="px-6 py-4 font-semibold">Gender</th>
-                    <th className="px-6 py-4 font-semibold">Condition</th>
                     <th className="px-6 py-4 font-semibold">Phone</th>
                     <th className="px-6 py-4 font-semibold">Address</th>
                     <th className="px-6 py-4 text-center font-semibold">Actions</th>
@@ -122,11 +130,11 @@ export default function PatientList({ initialData }: { initialData: Patient[] })
                 <tbody className="divide-y divide-gray-200">
                   {patients.map((p, index) => (
                     <tr
-                      key={p.id}
+                      key={p._id}
                       className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                     >
                       <td className="px-6 py-4">
-                        <Link href={`/medical-records/${p.id}`}>
+                        <Link href={`/medical-records/${p._id}`}>
                           <div className="flex items-center gap-3 cursor-pointer hover:text-blue-600 transition">
                             <span className="font-semibold text-gray-800">{p.name}</span>
                           </div>
@@ -146,8 +154,6 @@ export default function PatientList({ initialData }: { initialData: Patient[] })
                           {p.gender}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-700">{p.conditions}</td>
-
                       <td className="px-6 py-4 text-gray-700">{p.phone}</td>
                       <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">{p.address}</td>
                       <td className="px-6 py-4">
@@ -159,7 +165,7 @@ export default function PatientList({ initialData }: { initialData: Patient[] })
                             ✏️ Edit
                           </button>
                           <button
-                            onClick={() => handleDeletePatient(p.id)}
+                            onClick={() => handleDelete(String(p._id))}
                             className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow transition-all"
                           >
                             🗑️ Delete

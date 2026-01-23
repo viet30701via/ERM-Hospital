@@ -21,7 +21,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
-
+  app.setGlobalPrefix('api/v1');
   // 3. Validation Global
   app.useGlobalPipes(
     new ValidationPipe({
@@ -43,7 +43,7 @@ async function bootstrap() {
   // 5. Global Filters & Guards
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalGuards(new JwtAuthGuard(reflector));
-  await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
+  await app.listen(port);
 }
 bootstrap();

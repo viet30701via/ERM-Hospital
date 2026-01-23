@@ -1,21 +1,27 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// src/lib/api.ts
+export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
+  const token = localStorage.getItem("access_token");
 
-export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+  const defaultHeaders = {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
+  const config = {
     ...options,
-  });
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+  };
 
-  const data = await res.json();
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, config);
 
-  if (!res.ok) {
-    throw new Error(data.message || "API Error");
+  // Xử lý lỗi tập trung tại đây
+  if (response.status === 401) {
+    localStorage.removeItem("access_token");
+    window.location.href = "/login?message=expired";
   }
 
-  return data;
-}
+  return response;
+};

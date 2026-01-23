@@ -1,4 +1,3 @@
-// src/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -6,18 +5,10 @@ export function middleware(request: NextRequest) {
   const authToken = request.cookies.get("auth-token")?.value;
   const { pathname } = request.nextUrl;
 
-  // 1. Danh sách các vùng cần bảo vệ
-  const protectedPrefixes = [
-    "/dashboard",
-    "/patients",
-    "/doctors",
-    "/medical-records",
-    "/appointments",
-  ];
+  // 1. List protected routes
+  const protectedPrefixes = ["/dashboard", "/patients", "/doctors", "/medical-records", "/appointments"];
 
-  const isProtectedRoute = protectedPrefixes.some((prefix) =>
-    pathname.startsWith(prefix)
-  );
+  const isProtectedRoute = protectedPrefixes.some((prefix) => pathname.startsWith(prefix));
 
   if (isProtectedRoute && !authToken) {
     const url = new URL("/login", request.url);
@@ -32,7 +23,5 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|logo.png|.*\\..*).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|logo.png|.*\\..*).*)"],
 };
