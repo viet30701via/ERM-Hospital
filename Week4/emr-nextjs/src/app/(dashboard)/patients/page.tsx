@@ -7,14 +7,14 @@ export const metadata = {
 };
 
 export default async function PatientsPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth-token")?.value;
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("auth-token")?.value;
   const base_url = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${base_url}/api/v1/patients`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    next: { revalidate: 0 },
+    cache: "no-store",
   });
 
   if (res.status === 401) {
@@ -22,7 +22,6 @@ export default async function PatientsPage() {
   }
 
   const patients = await res.json();
-
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Manage Patients</h1>

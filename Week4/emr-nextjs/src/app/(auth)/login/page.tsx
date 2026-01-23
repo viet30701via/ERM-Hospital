@@ -16,7 +16,7 @@ function LoginFormContent() {
   useEffect(() => {
     const message = searchParams.get("message");
     if (message === "unauthorized") {
-      toast.error("Login failed!", {
+      toast.error("Login to access!", {
         duration: 4000,
         position: "top-center",
       });

@@ -1,7 +1,10 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from './common/filters/exceptionGlobal';
+import {
+  AllExceptionsFilter,
+  HttpExceptionFilter,
+} from './common/filters/exceptionGlobal';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -41,7 +44,7 @@ async function bootstrap() {
     SwaggerModule.setup('docs', app, document);
   }
   // 5. Global Filters & Guards
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   console.log(`Application is running on: http://localhost:${port}`);
   await app.listen(port);
