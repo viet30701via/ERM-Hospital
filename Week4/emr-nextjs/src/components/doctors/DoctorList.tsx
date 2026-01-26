@@ -1,65 +1,59 @@
 "use client";
 
 import { Doctor } from "@/types/Doctor";
-import { useCallback, useEffect, useState } from "react";
+import { useState, useEffect } from "react"; // Thêm useEffect để theo dõi thay đổi
 import Modal from "../ui/Modal";
 import DoctorForm from "./DoctorForm";
+import { apiRequest } from "@/lib/api";
 
-export default function DoctorList() {
-  const [doctors, setDoctor] = useState<Doctor[]>([]);
-  const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
-  const [showList, setShowList] = useState(true);
-  const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
+interface DoctorListProps {
+  initialData: Doctor[];
+}
 
-  const fetchDoctor = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "";
-      const res = await fetch(`${baseUrl}/data/doctors.json`, {
-        cache: "no-store",
-      });
-
-      if (!res.ok) throw new Error("Can not loading doctor list");
-      const data = await res.json();
-      setDoctor(data);
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Failed to loading.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+export default function DoctorList({ initialData }: DoctorListProps) {
+  const [doctors, setDoctors] = useState<Doctor[]>(initialData);
 
   useEffect(() => {
-    fetchDoctor();
-  }, [fetchDoctor]);
+    setDoctors(initialData);
+  }, [initialData]);
 
-  const showFeedback = (msg: string) => {
-    setMessage({ type: "success", text: msg });
+  const [editingDoctor, setEditingDoctor] = useState<Doctor | null>(null);
+  const [showList, setShowList] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const showFeedback = (msg: string, type: "success" | "error" = "success") => {
+    setMessage({ type, text: msg });
     setTimeout(() => setMessage(null), 3000);
   };
 
   const handleAddDoctor = (newDoctor: Doctor) => {
-    setDoctor((prev) => [...prev, newDoctor]);
-    showFeedback("Add Doctor Successfull");
+    setDoctors((prev) => [...prev, newDoctor]);
+    showFeedback("Add Doctor Successful!");
+    closeModal();
   };
 
   const handleUpdateDocter = (updated: Doctor) => {
-    setDoctor((prev) => prev.map((d) => (d.id === updated.id ? updated : d)));
-    showFeedback("Update Doctor success !");
+    setDoctors((prev) => prev.map((d) => (d._id === updated._id ? updated : d)));
+    showFeedback("Update Doctor Success!");
+    closeModal();
   };
-  const handleDeleteDocter = (id: string) => {
-    if (!window.confirm("Are you sure want to delete?")) return;
-    setDoctor((prev) => prev.filter((d) => d.id !== id));
-    showFeedback("Delete Successfull");
+
+  const handleDeleteDocter = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this doctor?")) return;
+    try {
+      const res = await apiRequest(`/api/v1/doctors/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setDoctors((prev) => prev.filter((d) => d._id !== id));
+        showFeedback("Delete Successful!");
+      } else {
+        showFeedback("Failed to delete.", "error");
+      }
+    } catch (err) {
+      showFeedback("An error occurred.", "error");
+    }
   };
+
   const openAddMode = () => {
     setEditingDoctor(null);
     setIsModalOpen(true);
@@ -72,17 +66,9 @@ export default function DoctorList() {
     setIsModalOpen(false);
     setEditingDoctor(null);
   };
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error)
-    return (
-      <div className="error-msg" style={{ color: "red" }}>
-        {error}
-      </div>
-    );
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Doctor Management</h1>
@@ -96,108 +82,72 @@ export default function DoctorList() {
           </button>
         </div>
 
-        {/* Feedback Message */}
         {message && (
           <div
-            className={`mb-6 border-l-4 p-4 rounded-lg shadow-md animate-bounce ${
-              message.type === "success"
-                ? "bg-green-100 border-green-500 text-green-800"
-                : "bg-red-100 border-red-500 text-red-800"
-            }`}
+            className={`mb-6 p-4 rounded-lg shadow-md border-l-4 ${message.type === "success" ? "bg-green-100 border-green-500 text-green-800" : "bg-red-100 border-red-500 text-red-800"}`}
           >
-            <div className="flex items-center gap-2">
-              <span>{message.type === "success" ? "✅" : "❌"}</span>
-              <p className="font-semibold">{message.text}</p>
-            </div>
+            {message.text}
           </div>
         )}
 
-        {/* Toggle View Button */}
         <div className="mb-6">
-          <button
-            onClick={() => setShowList(!showList)}
-            className="bg-white hover:bg-gray-50 text-gray-700 font-semibold py-2 px-6 rounded-lg shadow-md border border-gray-200 transition-all"
-          >
-            {showList ? " Hide Doctor List" : "Show Doctor List"}
+          <button onClick={() => setShowList(!showList)} className="bg-white border py-2 px-4 rounded-lg shadow-sm">
+            {showList ? "Hide List" : "Show List"}
           </button>
         </div>
 
-        {/* Table Section */}
         {showList && (
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-left">
-                    <th className="px-6 py-4 font-semibold">Doctor Name</th>
-                    <th className="px-6 py-4 font-semibold">Age</th>
-                    <th className="px-6 py-4 font-semibold">Gender</th>
-                    <th className="px-6 py-4 font-semibold">Specialization</th>
-                    <th className="px-6 py-4 font-semibold">Phone</th>
-                    <th className="px-6 py-4 font-semibold">Address</th>
-                    <th className="px-6 py-4 text-center font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {doctors.map((p, index) => (
-                    <tr
-                      key={p.id}
-                      className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                            {p.name.charAt(0)}
-                          </div>
-                          <span className="font-semibold text-gray-800">{p.name}</span>
-                        </div>
-                      </td>
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-left">
+                  <th className="px-6 py-4 font-semibold">Doctor Name</th>
+                  <th className="px-6 py-4 font-semibold">Specialization</th>
+                  <th className="px-6 py-4 font-semibold">Gender</th>
+                  <th className="px-6 py-4 font-semibold">Address</th>
+                  <th className="px-6 py-4 font-semibold">Phone</th>
 
-                      <td className="px-6 py-4 text-gray-700">{p.age}</td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            p.gender.toString() === "Male"
-                              ? "bg-blue-100 text-blue-800"
-                              : p.gender.toString() === "Female"
-                                ? "bg-pink-100 text-pink-800"
-                                : "bg-purple-100 text-purple-800"
-                          }`}
+                  <th className="px-6 py-4 text-center font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {doctors.length > 0 ? (
+                  doctors.map((p) => (
+                    <tr key={p._id} className="hover:bg-blue-50 transition-colors">
+                      <td className="px-6 py-4 font-semibold">{p.name}</td>
+                      <td className="px-6 py-4">{p.specialization}</td>
+                      <td className="px-6 py-4">{p.gender}</td>
+                      <td className="px-6 py-4">{p.phone}</td>
+                      <td className="px-6 py-4">{p.address}</td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => openEditMode(p)}
+                          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow transition-all"
                         >
-                          {p.gender}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-gray-700">{p.phone}</td>
-                      <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">{p.address}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => openEditMode(p)}
-                            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg shadow transition-all"
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteDocter(p.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow transition-all"
-                          >
-                            🗑️ Delete
-                          </button>
-                        </div>
+                          ✏️ Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteDocter(String(p._id))}
+                          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg shadow transition-all"
+                        >
+                          🗑️ Delete
+                        </button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="p-10 text-center text-gray-500">
+                      No doctors found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         )}
 
-        {/* Modal Form */}
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <h3 className="text-2xl font-bold text-gray-800 mb-6">
-            {editingDoctor ? "✏️ Update Doctor Information" : "➕ Add New Doctor"}
-          </h3>
           <DoctorForm
             initialData={editingDoctor ?? undefined}
             onSubmit={editingDoctor ? handleUpdateDocter : handleAddDoctor}

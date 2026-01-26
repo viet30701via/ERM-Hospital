@@ -1,10 +1,12 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import { Doctor } from "@/types/Doctor";
-import { Role, type Gender, Status } from "../../types/Type";
+import type { Doctor } from "@/types/Doctor";
+import { type Gender } from "@/types/Type";
 import useFormValidation from "@/hooks/useFormValidation";
 import InputField from "../ui/InputField";
 import SelectField from "../ui/SelectField";
 import Button from "../ui/Button";
+import toast from "react-hot-toast";
 
 interface DoctorFormProps {
   initialData?: Doctor;
@@ -15,62 +17,71 @@ interface DoctorFormProps {
 export default function DoctorForm({ initialData, onSubmit, onSuccess }: DoctorFormProps) {
   const [name, setName] = useState(() => initialData?.name ?? "");
   const [age, setAge] = useState(() => initialData?.age ?? 0);
-  const [gender, setGender] = useState<Gender>(() => initialData?.gender ?? "male");
+  const [gender, setGender] = useState<string>(() => initialData?.gender ?? "Male");
+  const [specialization, setSpecialization] = useState(() => initialData?.specialization ?? "");
   const [phone, setPhone] = useState(() => initialData?.phone ?? "");
   const [address, setAddress] = useState(() => initialData?.address ?? "");
 
   const { errors, validate } = useFormValidation();
-  useEffect(() => {
-    validate({ name, age, phone, address });
-  }, [name, age, phone, address]);
-  const isFormValid = !errors.name && !errors.age && !errors.phone && !errors.address;
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const isFormValid = name && specialization && phone && age > 0;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const ok = validate({ name, age, address, phone });
-    if (!ok) return;
-    const doctor: Doctor = {
-      id: initialData?.id ?? "",
-      name: name,
-      age: age,
-      gender,
-      address: address,
-      phone: phone,
-      role: Role.Doctor,
-      status: Status.Active,
-      specialization: "",
-    };
-    onSubmit(doctor);
-    onSuccess();
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth-token="))
+      ?.split("=")[1];
+
+    const isEdit = !!initialData?._id;
+    const url = isEdit
+      ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/doctors/${initialData._id}`
+      : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/doctors`;
+
+    try {
+      const res = await fetch(url, {
+        method: isEdit ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name,
+          age,
+          gender,
+          specialization,
+          phone,
+          address,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        onSubmit(result.data || result);
+        onSuccess();
+        toast.success(isEdit ? "Update Doctor Success!" : "Add Doctor Success!");
+      } else {
+        toast.error(result.message || "Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Network error, please try again.");
+    }
   };
+
   return (
-    <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">{initialData ? "Update Doctor" : "Add New Doctor"}</h2>
+    <div className="bg-white p-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <InputField label="Full Name" value={name} onChange={setName} />
+        <InputField label="Age" type="number" value={String(age)} onChange={(v) => setAge(Number(v))} />
+        <SelectField label="Gender" value={gender} onChange={setGender} options={["Male", "Female"]} />
+        <InputField label="Specialization" value={specialization} onChange={setSpecialization} />
+        <InputField label="Phone" value={phone} onChange={setPhone} />
+        <InputField label="Address" value={address} onChange={setAddress} />
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Name */}
-        <InputField label="Name" value={name} onChange={setName} error={errors.name} />
-
-        {/* Age */}
-        <InputField
-          label="Age"
-          type="number"
-          value={String(age)}
-          onChange={(v) => setAge(Number(v))}
-          error={errors.age}
-        />
-        {/* Gender */}
-        <SelectField label="Gender" value={gender} onChange={setGender} options={["male", "female"]} />
-
-        {/* Phone */}
-        <InputField label="Phone" value={phone} onChange={setPhone} error={errors.phone} />
-
-        {/* Address */}
-        <InputField label="Address" value={address} onChange={setAddress} error={errors.address} />
-
-        {/* Button */}
-        <div className="md:col-span-2 flex justify-end mt-4">
+        <div className="md:col-span-2 flex justify-end gap-3 mt-6">
           <Button type="submit" disabled={!isFormValid}>
-            {initialData ? "Update Doctor" : "Add Doctor"}
+            {initialData ? "Save Changes" : "Create Doctor"}
           </Button>
         </div>
       </form>
