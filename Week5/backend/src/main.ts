@@ -1,10 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import {
-  AllExceptionsFilter,
-  HttpExceptionFilter,
-} from './common/filters/exceptionGlobal';
+import { AllExceptionsFilter } from './common/filters/exceptionGlobal';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';

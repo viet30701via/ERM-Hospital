@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { MedicalRecordsModule } from './medical-records/medical-records.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot([
@@ -29,6 +30,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     AuthModule,
     UsersModule,
     PatientsModule,
+    MedicalRecordsModule,
   ],
 })
 export class AppModule {}

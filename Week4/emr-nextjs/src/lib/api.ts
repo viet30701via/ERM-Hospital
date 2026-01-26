@@ -1,4 +1,3 @@
-// src/lib/api.ts
 export const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const token = localStorage.getItem("access_token");
 
