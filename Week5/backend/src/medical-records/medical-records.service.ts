@@ -14,6 +14,10 @@ export class MedicalRecordsService {
   }
 
   async findByPatientId(patientId: string) {
-    return this.medicalRecordModel.find({ patientId });
+    return this.medicalRecordModel
+      .find({ patientId })
+      .populate('doctorId', 'name')
+      .sort({ createdAt: -1 })
+      .exec();
   }
 }

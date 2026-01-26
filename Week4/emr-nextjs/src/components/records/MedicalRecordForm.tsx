@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
 import { apiRequest } from "@/lib/api";
@@ -13,9 +14,9 @@ export default function MedicalRecordForm({ patientId, onRefresh }: { patientId:
         method: "POST",
         body: JSON.stringify({ ...formData, patientId }),
       });
-      toast.success("Thêm bệnh án thành công!");
+      toast.success("Add medical record successfully!");
       setFormData({ diagnosis: "", prescription: "", notes: "" });
-      onRefresh(); // Gọi hàm để tải lại danh sách
+      onRefresh();
     } catch (error: any) {
       toast.error(error.message);
     }

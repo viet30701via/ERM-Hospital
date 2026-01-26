@@ -68,6 +68,7 @@ export class PatientsService {
 
     return this.patient.find(filter).exec();
   }
+
   async findOne(id: string, user: any): Promise<PatientDocument> {
     return this.checkOwnership(id, user);
   }

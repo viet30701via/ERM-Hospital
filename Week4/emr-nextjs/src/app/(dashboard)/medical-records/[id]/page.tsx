@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import RecordForm from "@/components/medicalRecord/medicalRecordForm";
 import { cookies } from "next/headers";
 import Link from "next/link";

@@ -28,7 +28,7 @@ export default function RecordForm({ patientId, token }: { patientId: string; to
     });
 
     if (res.ok) {
-      alert("Tạo hồ sơ thành công!");
+      alert("Add record successfully!");
       (e.target as HTMLFormElement).reset();
       router.refresh(); // Tự động load lại danh sách bên phải
     } else {

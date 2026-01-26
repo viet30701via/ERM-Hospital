@@ -1,7 +1,7 @@
 import { Gender, Role, Status } from "./Type";
 
 export interface Doctor {
-  id: string;
+  _id: string;
   name: string;
   age: number;
   gender: Gender;

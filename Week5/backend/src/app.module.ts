@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/user.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { MedicalRecordsModule } from './medical-records/medical-records.module';
+import { DoctorsModule } from './doctors/doctors.module';
 @Module({
   imports: [
     ThrottlerModule.forRoot([
@@ -31,6 +32,7 @@ import { MedicalRecordsModule } from './medical-records/medical-records.module';
     UsersModule,
     PatientsModule,
     MedicalRecordsModule,
+    DoctorsModule,
   ],
 })
 export class AppModule {}

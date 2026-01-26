@@ -8,37 +8,34 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+    const request = ctx.getRequest();
 
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // Lấy nội dung lỗi từ NestJS
-    const exceptionResponse =
-      exception instanceof HttpException ? exception.getResponse() : null;
-
+    // Lấy message an toàn
     const message =
-      typeof exceptionResponse === 'object'
-        ? (exceptionResponse as any).message || exception.message
-        : exceptionResponse || exception.message;
+      exception?.response?.message ||
+      exception?.message ||
+      'Internal server error';
 
-    // Trả về format chuẩn Ngày 5
+    // 🔴 CHỖ NÀY GÂY LỖI: Cần thêm ?. để không bị crash khi errors không tồn tại
+    const errors = exception?.response?.errors || null;
+
     response.status(status).json({
       success: false,
       statusCode: status,
-      message: Array.isArray(message) ? message[0] : message,
-      errors:
-        typeof exceptionResponse === 'object'
-          ? (exceptionResponse as any).errors
-          : null,
+      message: message,
+      errors: errors, // Nếu null thì trả về null, không bị crash code nữa
       timestamp: new Date().toISOString(),
+      path: request.url,
     });
   }
 }

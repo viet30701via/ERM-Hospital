@@ -85,9 +85,7 @@ export default function DoctorList() {
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-              Doctor Management
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">Doctor Management</h1>
           </div>
           <button
             onClick={openAddMode}
@@ -137,27 +135,21 @@ export default function DoctorList() {
                     <th className="px-6 py-4 font-semibold">Specialization</th>
                     <th className="px-6 py-4 font-semibold">Phone</th>
                     <th className="px-6 py-4 font-semibold">Address</th>
-                    <th className="px-6 py-4 text-center font-semibold">
-                      Actions
-                    </th>
+                    <th className="px-6 py-4 text-center font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {doctors.map((p, index) => (
                     <tr
                       key={p.id}
-                      className={`hover:bg-blue-50 transition-colors ${
-                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                      }`}
+                      className={`hover:bg-blue-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                             {p.name.charAt(0)}
                           </div>
-                          <span className="font-semibold text-gray-800">
-                            {p.name}
-                          </span>
+                          <span className="font-semibold text-gray-800">{p.name}</span>
                         </div>
                       </td>
 
@@ -168,20 +160,15 @@ export default function DoctorList() {
                             p.gender.toString() === "Male"
                               ? "bg-blue-100 text-blue-800"
                               : p.gender.toString() === "Female"
-                              ? "bg-pink-100 text-pink-800"
-                              : "bg-purple-100 text-purple-800"
+                                ? "bg-pink-100 text-pink-800"
+                                : "bg-purple-100 text-purple-800"
                           }`}
                         >
                           {p.gender}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-700">
-                        {p.specialization}
-                      </td>
                       <td className="px-6 py-4 text-gray-700">{p.phone}</td>
-                      <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">
-                        {p.address}
-                      </td>
+                      <td className="px-6 py-4 text-gray-600 text-sm max-w-xs truncate">{p.address}</td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center gap-2">
                           <button
@@ -209,9 +196,7 @@ export default function DoctorList() {
         {/* Modal Form */}
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <h3 className="text-2xl font-bold text-gray-800 mb-6">
-            {editingDoctor
-              ? "✏️ Update Doctor Information"
-              : "➕ Add New Doctor"}
+            {editingDoctor ? "✏️ Update Doctor Information" : "➕ Add New Doctor"}
           </h3>
           <DoctorForm
             initialData={editingDoctor ?? undefined}
